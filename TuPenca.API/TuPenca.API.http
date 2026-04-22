@@ -1,0 +1,6 @@
+@TuPenca.API_HostAddress = http://localhost:5264
+
+GET {{TuPenca.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
