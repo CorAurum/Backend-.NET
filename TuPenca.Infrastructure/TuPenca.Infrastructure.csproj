@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TuPenca.Application\TuPenca.Application.csproj" />
+    <ProjectReference Include="..\TuPenca.Domain\TuPenca.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -4,9 +4,9 @@
     <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="Domain/Tupenca.Domain.csproj" Id="ffaad38a-d15c-4b79-86b1-5d66a4b8d564" />
     <Project Path="TuPenca.API/TuPenca.API.csproj" Id="2f979a28-08f1-4f3a-8b38-7f6237a14795" />
     <Project Path="TuPenca.Application/TuPenca.Application.csproj" Id="4e53c360-2162-461b-94c2-3cb2f3a9402d" />
+    <Project Path="TuPenca.Domain/TuPenca.Domain.csproj" Id="cee2f7ba-42d7-4248-a118-209b1db892d4" />
     <Project Path="TuPenca.Infrastructure/TuPenca.Infrastructure.csproj" Id="74c085da-d771-4ec3-a456-4ab1417a0d5c" />
   </Folder>
   <Folder Name="/tests/" />
