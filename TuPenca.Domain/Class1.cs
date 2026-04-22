@@ -1,4 +1,4 @@
-﻿namespace Domain
+﻿namespace TuPenca.Domain
 {
     public class Class1
     {
