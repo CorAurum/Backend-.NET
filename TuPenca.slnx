@@ -9,5 +9,7 @@
     <Project Path="TuPenca.Domain/TuPenca.Domain.csproj" Id="cee2f7ba-42d7-4248-a118-209b1db892d4" />
     <Project Path="TuPenca.Infrastructure/TuPenca.Infrastructure.csproj" Id="74c085da-d771-4ec3-a456-4ab1417a0d5c" />
   </Folder>
-  <Folder Name="/tests/" />
+  <Folder Name="/tests/">
+    <Project Path="TuPenca.Application.Tests/TuPenca.Application.Tests.csproj" Id="bad5d293-596c-4ada-8b37-f7174e61d49d" />
+  </Folder>
 </Solution>
