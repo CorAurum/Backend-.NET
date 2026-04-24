@@ -1,7 +1,11 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TuPenca.Domain.Interfaces;
+using TuPenca.Domain.Interfaces.Repositories;
+using TuPenca.Infrastructure.Data;
+using TuPenca.Infrastructure.Data.Repositories;
 // using TuPenca.Infrastructure.Data;
 // revisar si es necesario
 
@@ -27,6 +31,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
+
+// ─── Repositorios y Unit of Work ─────────────────────────
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // ─── AutoMapper ───────────────────────────────────────────────
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 

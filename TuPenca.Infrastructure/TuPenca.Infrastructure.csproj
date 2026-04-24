@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Repositories\" />
     <Folder Include="Identity\" />
     <Folder Include="Email\" />
     <Folder Include="Migrations\" />
