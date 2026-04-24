@@ -82,5 +82,60 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Invitacion>()
             .HasIndex(i => i.Codigo)
             .IsUnique();
+
+
+        // experimental
+        modelBuilder.Entity<Invitacion>()
+    .HasOne(i => i.Sitio)
+    .WithMany(s => s.Invitaciones)
+    .HasForeignKey(i => i.SitioId)
+    .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Invitacion>()
+    .HasOne(i => i.Administrador)
+    .WithMany(a => a.Invitaciones)
+    .HasForeignKey(i => i.AdministradorId)
+    .OnDelete(DeleteBehavior.NoAction);
+
+
+        modelBuilder.Entity<MensajeChat>()
+    .HasOne(m => m.Usuario)
+    .WithMany(u => u.Mensajes)
+    .HasForeignKey(m => m.UsuarioId)
+    .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<MensajeChat>()
+            .HasOne(m => m.Penca)
+            .WithMany(p => p.Mensajes)
+            .HasForeignKey(m => m.PencaId)
+          .OnDelete(DeleteBehavior.NoAction);
+
+
+        modelBuilder.Entity<Notificacion>()
+    .HasOne(n => n.Penca)
+    .WithMany(p => p.Notificaciones)
+    .HasForeignKey(n => n.PencaId)
+    .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Notificacion>()
+    .HasOne(n => n.Usuario)
+    .WithMany(u => u.Notificaciones)
+    .HasForeignKey(n => n.UsuarioId)
+    .OnDelete(DeleteBehavior.NoAction);
+
+
+        modelBuilder.Entity<PuntajeUsuario>()
+    .HasOne(p => p.Penca)
+    .WithMany(p => p.Puntajes)
+    .HasForeignKey(p => p.PencaId)
+    .OnDelete(DeleteBehavior.NoAction);
+
+
+        modelBuilder.Entity<PuntajeUsuario>()
+    .HasOne(p => p.Usuario)
+    .WithMany(u => u.Puntajes)
+    .HasForeignKey(p => p.UsuarioId)
+    .OnDelete(DeleteBehavior.NoAction);
+
     }
 }

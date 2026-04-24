@@ -2,7 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TuPenca.Infrastructure.Data;
+// using TuPenca.Infrastructure.Data;
+// revisar si es necesario
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +29,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // ─── AutoMapper ───────────────────────────────────────────────
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
+//revisar pq da error
 
 // ─── SignalR ──────────────────────────────────────────────────
 builder.Services.AddSignalR();
