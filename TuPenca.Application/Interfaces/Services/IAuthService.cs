@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using TuPenca.Application.DTOs.Auth;
+
+namespace TuPenca.Application.Interfaces.Services
+{
+    public interface IAuthService
+    {
+        Task<LoginResponseDto?> LoginAsync(LoginRequestDto request);
+        string HashPassword(string password);
+        bool VerifyPassword(string password, string hash);
+    }
+}

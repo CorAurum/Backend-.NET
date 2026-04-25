@@ -13,6 +13,7 @@ namespace TuPenca.Infrastructure.Data
         private readonly AppDbContext _context;
 
         public IUsuarioRepository Usuarios { get; }
+        public IAdministradorRepository Administrador { get; }
         public IRepository<Sitio> Sitios { get; }
         public IRepository<Penca> Pencas { get; }
         public IRepository<Partido> Partidos { get; }
@@ -27,10 +28,11 @@ namespace TuPenca.Infrastructure.Data
         public IRepository<EventoDeportivo> EventosDeportivos { get; }
         public IRepository<Equipo> Equipos { get; }
 
-        public UnitOfWork(AppDbContext context, IUsuarioRepository usuarios)
+        public UnitOfWork(AppDbContext context, IUsuarioRepository usuarios, IAdministradorRepository administradores)
         {
             _context = context;
             Usuarios = usuarios;
+            Administrador = administradores;
             Sitios = new Repository<Sitio>(context);
             Pencas = new Repository<Penca>(context);
             Partidos = new Repository<Partido>(context);

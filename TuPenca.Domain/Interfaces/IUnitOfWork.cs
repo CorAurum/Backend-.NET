@@ -9,6 +9,7 @@ namespace TuPenca.Domain.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IUsuarioRepository Usuarios { get; }
+        IAdministradorRepository Administrador { get; }
         IRepository<Sitio> Sitios { get; }
         IRepository<Penca> Pencas { get; }
         IRepository<Partido> Partidos { get; }
