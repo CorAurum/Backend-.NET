@@ -14,24 +14,25 @@ public class JwtService : IJwtService
         _config = config;
     }
 
-    public string GenerarToken(string id, string email, string nombre, string rol)
+    public string GenerarToken(string id, string email, string nombre, string rol, string? sitioId = null)
     {
-        // Claims — la info que va dentro del token
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, id),
-            new Claim(JwtRegisteredClaimNames.Email, email),
-            new Claim("nombre", nombre),
-            new Claim(ClaimTypes.Role, rol),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+        var claims = new List<Claim>
+    {
+        new Claim(JwtRegisteredClaimNames.Sub, id),
+        new Claim(JwtRegisteredClaimNames.Email, email),
+        new Claim("nombre", nombre),
+        new Claim(ClaimTypes.Role, rol),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
 
-        // Clave de firma
+        // Solo agregamos SitioId si no es admin de plataforma
+        if (!string.IsNullOrEmpty(sitioId))
+            claims.Add(new Claim("sitioId", sitioId));
+
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // Armar el token
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],

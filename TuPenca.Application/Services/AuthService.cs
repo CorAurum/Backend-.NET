@@ -39,11 +39,12 @@ public class AuthService : IAuthService
                 : "UsuarioComun";
 
             var token = _jwtService.GenerarToken(
-                usuario.Id.ToString(),
-                usuario.Email,
-                usuario.Nombre,
-                rolClaim
-            );
+               usuario.Id.ToString(),
+               usuario.Email,
+               usuario.Nombre,
+               rolClaim,
+               usuario.SitioId.ToString() // ← agregado
+           );
 
             return new LoginResponseDto
             {
@@ -67,12 +68,15 @@ public class AuthService : IAuthService
             if (resultado == PasswordVerificationResult.Failed)
                 return null;
 
+            // Login de AdministradorPlataforma — sin SitioId
             var token = _jwtService.GenerarToken(
                 admin.Id.ToString(),
                 admin.Email,
                 admin.Email,
                 "AdministradorPlataforma"
+            // sin sitioId → queda null
             );
+
 
             return new LoginResponseDto
             {

@@ -6,6 +6,6 @@ namespace TuPenca.Application.Interfaces.Services
 {
     public interface IJwtService
     {
-        string GenerarToken(string id, string email, string nombre, string rol);
+        string GenerarToken(string id, string email, string nombre, string rol, string? sitioId = null);
     }
 }

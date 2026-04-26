@@ -14,9 +14,9 @@ namespace TuPenca.Domain.Entities
         public Guid SitioId { get; set; }
         public Sitio Sitio { get; set; } = null!;
 
-        // N Invitaciones → 1 Administrador (quien la generó)
-        public Guid AdministradorId { get; set; }
-        public Administrador Administrador { get; set; } = null!;
+        // N Invitaciones → 1 Administrador de sitio (quien la generó)
+        public Guid UsuarioId { get; set; }      // el AdminSitio que generó la invitación
+        public Usuario Usuario { get; set; } = null!;
     }
 
 }

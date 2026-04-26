@@ -1,10 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TuPenca.Application.Interfaces.Services;
 using TuPenca.Domain.Entities;
 using TuPenca.Domain.Enums;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+   
+    private readonly ITenantService? _tenantService;
+
+    // ITenantService es opcional (?) porque al correr migraciones
+    // no hay HTTP context disponible
+    public AppDbContext(DbContextOptions<AppDbContext> options,
+        ITenantService? tenantService = null) : base(options)
+    {
+        _tenantService = tenantService;
+    }
 
     // ─── DbSets ───────────────────────────────────────────────
     // Equivalente a los @Repository en Spring — cada uno representa una tabla
@@ -45,6 +55,45 @@ public class AppDbContext : DbContext
             .WithMany(e => e.PartidosComoVisitante)
             .HasForeignKey(p => p.EquipoVisitanteId)
             .OnDelete(DeleteBehavior.Restrict);
+
+
+          // ─── Filtros globales de multi-tenancy ────────────────
+        // Solo aplican si NO es admin de plataforma
+        modelBuilder.Entity<Usuario>()
+            .HasQueryFilter(u => 
+                _tenantService == null ||
+                _tenantService.EsAdminPlataforma() ||
+                u.SitioId == _tenantService.GetSitioId());
+
+        modelBuilder.Entity<Penca>()
+            .HasQueryFilter(p =>
+                _tenantService == null ||
+                _tenantService.EsAdminPlataforma() ||
+                p.SitioId == _tenantService.GetSitioId());
+
+        modelBuilder.Entity<Invitacion>()
+            .HasQueryFilter(i =>
+                _tenantService == null ||
+                _tenantService.EsAdminPlataforma() ||
+                i.SitioId == _tenantService.GetSitioId());
+
+        modelBuilder.Entity<MensajeChat>()
+            .HasQueryFilter(m =>
+                _tenantService == null ||
+                _tenantService.EsAdminPlataforma() ||
+                m.Penca.SitioId == _tenantService.GetSitioId());
+
+        modelBuilder.Entity<Notificacion>()
+            .HasQueryFilter(n =>
+                _tenantService == null ||
+                _tenantService.EsAdminPlataforma() ||
+                n.Penca.SitioId == _tenantService.GetSitioId());
+
+        modelBuilder.Entity<Prediccion>()
+            .HasQueryFilter(p =>
+                _tenantService == null ||
+                _tenantService.EsAdminPlataforma() ||
+                p.Usuario.SitioId == _tenantService.GetSitioId());
 
         // ─── Enums como string en la BD ────────────────────────
         // Por defecto EF guarda enums como int (0,1,2)
@@ -100,9 +149,9 @@ public class AppDbContext : DbContext
     .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<Invitacion>()
-    .HasOne(i => i.Administrador)
-    .WithMany(a => a.Invitaciones)
-    .HasForeignKey(i => i.AdministradorId)
+    .HasOne(i => i.Usuario)
+    .WithMany()
+    .HasForeignKey(i => i.UsuarioId)
     .OnDelete(DeleteBehavior.NoAction);
 
 
