@@ -26,4 +26,33 @@ public class AuthController : ControllerBase
 
         return Ok(response);
     }
+
+    [HttpPost("registro/usuario")]
+    public async Task<IActionResult> RegistrarUsuario([FromBody] RegistroUsuarioRequestDto request)
+    {
+        try
+        {
+            var response = await _authService.RegistrarUsuarioAsync(request);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("registro/administrador")]
+    public async Task<IActionResult> RegistrarAdmin([FromBody] RegistroAdminRequestDto request)
+    {
+        try
+        {
+            var response = await _authService.RegistrarAdminAsync(request);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 }

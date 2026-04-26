@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TuPenca.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260424222538_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260426160325_InitialCreate3")]
+    partial class InitialCreate3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,12 +47,7 @@ namespace TuPenca.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SitioId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SitioId");
 
                     b.ToTable("Administradores");
                 });
@@ -545,6 +540,10 @@ namespace TuPenca.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TipoRegistro")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UrlPropia")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -613,6 +612,10 @@ namespace TuPenca.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("SitioId")
                         .HasColumnType("uniqueidentifier");
 
@@ -627,17 +630,6 @@ namespace TuPenca.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
-                });
-
-            modelBuilder.Entity("TuPenca.Domain.Entities.Administrador", b =>
-                {
-                    b.HasOne("TuPenca.Domain.Entities.Sitio", "Sitio")
-                        .WithMany("Administradores")
-                        .HasForeignKey("SitioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Sitio");
                 });
 
             modelBuilder.Entity("TuPenca.Domain.Entities.EventoDeportivo", b =>
@@ -904,8 +896,6 @@ namespace TuPenca.Infrastructure.Migrations
 
             modelBuilder.Entity("TuPenca.Domain.Entities.Sitio", b =>
                 {
-                    b.Navigation("Administradores");
-
                     b.Navigation("Invitaciones");
 
                     b.Navigation("Pencas");

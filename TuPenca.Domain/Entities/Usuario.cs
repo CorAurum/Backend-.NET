@@ -10,6 +10,7 @@ namespace TuPenca.Domain.Entities
         public string Nombre { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
+        public RolUsuario Rol { get; set; } = RolUsuario.UsuarioComun;
         public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
         public EstadoUsuario Estado { get; set; } = EstadoUsuario.Pendiente;
         public ProveedorAuth ProveedorAuth { get; set; } = ProveedorAuth.Local;

@@ -61,8 +61,16 @@ public class AppDbContext : DbContext
             .Property(s => s.Estado)
             .HasConversion<string>();
 
+        modelBuilder.Entity<Sitio>()
+            .Property(s => s.TipoRegistro)
+            .HasConversion<string>();
+
         modelBuilder.Entity<Pago>()
             .Property(p => p.Estado)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<Usuario>()
+            .Property(u => u.Rol)
             .HasConversion<string>();
 
         //modelBuilder.Entity<Pago>()

@@ -6,11 +6,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TuPenca.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Administradores",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Administradores", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Deportes",
                 columns: table => new
@@ -49,6 +65,7 @@ namespace TuPenca.Infrastructure.Migrations
                     EsquemaColores = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConfiguracionSitio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoRegistro = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -72,26 +89,31 @@ namespace TuPenca.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Administradores",
+                name: "Invitaciones",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EmailInvitado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Codigo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Aceptada = table.Column<bool>(type: "bit", nullable: false),
                     SitioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AdministradorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Administradores", x => x.Id);
+                    table.PrimaryKey("PK_Invitaciones", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Administradores_Sitios_SitioId",
+                        name: "FK_Invitaciones_Administradores_AdministradorId",
+                        column: x => x.AdministradorId,
+                        principalTable: "Administradores",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invitaciones_Sitios_SitioId",
                         column: x => x.SitioId,
                         principalTable: "Sitios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -102,6 +124,7 @@ namespace TuPenca.Infrastructure.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rol = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProveedorAuth = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -149,34 +172,6 @@ namespace TuPenca.Infrastructure.Migrations
                         principalTable: "TiposCompetencia",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Invitaciones",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EmailInvitado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Aceptada = table.Column<bool>(type: "bit", nullable: false),
-                    SitioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AdministradorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invitaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invitaciones_Administradores_AdministradorId",
-                        column: x => x.AdministradorId,
-                        principalTable: "Administradores",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Invitaciones_Sitios_SitioId",
-                        column: x => x.SitioId,
-                        principalTable: "Sitios",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -446,11 +441,6 @@ namespace TuPenca.Infrastructure.Migrations
                         principalTable: "Usuarios",
                         principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Administradores_SitioId",
-                table: "Administradores",
-                column: "SitioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventosDeportivos_DeporteId",

@@ -12,15 +12,9 @@ namespace TuPenca.Infrastructure.Data.Repositories
     {
         public AdministradorRepository(AppDbContext context) : base(context) { }
 
-        public async Task<Administrador?> GetByEmailAsync(string email, Guid sitioId)
+        public async Task<Administrador?> GetByEmailAsync(string email)
             => await _dbSet
-                .FirstOrDefaultAsync(u => u.Email == email && u.SitioId == sitioId);
+                .FirstOrDefaultAsync(u => u.Email == email);
 
-        public async Task<IEnumerable<Administrador>> GetBySitioAsync(Guid sitioId)
-            => await _dbSet
-                .Where(u => u.SitioId == sitioId)
-                .ToListAsync();
-
- 
     }
 }
