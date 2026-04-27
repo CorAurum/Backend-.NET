@@ -3,10 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TuPenca.Application.Interfaces.Services;
+using TuPenca.Application.Services;
+using TuPenca.Domain.Entities;
 using TuPenca.Domain.Interfaces;
 using TuPenca.Domain.Interfaces.Repositories;
 using TuPenca.Infrastructure.Data;
 using TuPenca.Infrastructure.Data.Repositories;
+using TuPenca.Infrastructure.Interfaces.Providers;
+using TuPenca.Infrastructure.Middleware;
+using TuPenca.Infrastructure.Providers;
 // using TuPenca.Infrastructure.Data;
 // revisar si es necesario
 
@@ -35,13 +40,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // ─── Multi-tenancy ────────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ITenantService, TenantService>();
+builder.Services.AddScoped<ISitioProvider, SitioProvider>();
 
 // ─── Repositorios y Unit of Work ─────────────────────────
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAdministradorRepository, AdministradorRepository>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ISitioService, SitioService>();
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // ─── AutoMapper ───────────────────────────────────────────────
@@ -73,6 +81,9 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// ─── Middleware ───────────────────────────────────────────────
+app.UseMiddleware<SitioResolverMiddleware>();
+
 // ─── Middleware pipeline ──────────────────────────────────────
 if (app.Environment.IsDevelopment())
 {
@@ -89,5 +100,46 @@ app.MapControllers();
 
 // ─── SignalR Hubs ─────────────────────────────────────────────
 // app.MapHub<ResultadosHub>("/hubs/resultados");
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    if (!db.Sitios.Any())
+    {
+        var sitio = new Sitio
+        {
+            Id = Guid.NewGuid(),
+            Nombre = "Empresa1",
+            UrlPropia = "empresa1.local",
+            EsquemaColores = ""
+        };
+
+        db.Sitios.Add(sitio);
+
+        var sitio2= new Sitio
+        {
+            Id = Guid.NewGuid(),
+            Nombre = "Empresa2",
+            UrlPropia = "empresa2.local",
+            EsquemaColores = ""
+        };
+
+        db.Sitios.Add(sitio2);
+
+        db.Usuarios.Add(new Usuario
+        {
+            Id = Guid.NewGuid(),
+            Nombre = "Admin Empresa1",
+            Email = "admin@admin.com",
+            PasswordHash = "123",
+            Rol = TuPenca.Domain.Enums.RolUsuario.AdministradorSitio,
+            SitioId = sitio.Id
+        });
+
+        db.SaveChanges();
+    }
+}
 
 app.Run();

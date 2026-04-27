@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Hubs\**" />
+    <Compile Remove="Middleware\**" />
+    <Content Remove="Hubs\**" />
+    <Content Remove="Middleware\**" />
+    <EmbeddedResource Remove="Hubs\**" />
+    <EmbeddedResource Remove="Middleware\**" />
+    <None Remove="Hubs\**" />
+    <None Remove="Middleware\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7" />
@@ -20,11 +31,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TuPenca.Application\TuPenca.Application.csproj" />
     <ProjectReference Include="..\TuPenca.Infrastructure\TuPenca.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Hubs\" />
-    <Folder Include="Middleware\" />
   </ItemGroup>
 
 </Project>

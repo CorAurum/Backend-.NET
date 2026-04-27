@@ -1,25 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TuPenca.Application.DTOs.Auth;
 using TuPenca.Application.Interfaces.Services;
+using TuPenca.Infrastructure.Interfaces.Providers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ISitioProvider _sitioProvider;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ISitioProvider sitioProvider)
     {
         _authService = authService;
+        _sitioProvider = sitioProvider;
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
+        var sitioId = _sitioProvider.GetSitioId();
+
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             return BadRequest("Email y contraseña son requeridos");
 
-        var response = await _authService.LoginAsync(request);
+        var response = await _authService.LoginAsync(request, sitioId);
 
         if (response == null)
             return Unauthorized("Credenciales incorrectas");
@@ -32,7 +37,8 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var response = await _authService.RegistrarUsuarioAsync(request);
+            var sitioId = _sitioProvider.GetSitioId();
+            var response = await _authService.RegistrarUsuarioAsync(request, sitioId);
             return Ok(response);
         }
         catch (Exception ex)

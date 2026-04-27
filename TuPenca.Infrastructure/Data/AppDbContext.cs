@@ -2,18 +2,19 @@
 using TuPenca.Application.Interfaces.Services;
 using TuPenca.Domain.Entities;
 using TuPenca.Domain.Enums;
+using TuPenca.Infrastructure.Interfaces.Providers;
 
 public class AppDbContext : DbContext
 {
    
-    private readonly ITenantService? _tenantService;
+    private readonly ISitioProvider? _sitioProvider;
 
-    // ITenantService es opcional (?) porque al correr migraciones
+    // ISitioProvider es opcional (?) porque al correr migraciones
     // no hay HTTP context disponible
     public AppDbContext(DbContextOptions<AppDbContext> options,
-        ITenantService? tenantService = null) : base(options)
+        ISitioProvider? sitioProvider = null) : base(options)
     {
-        _tenantService = tenantService;
+        _sitioProvider = sitioProvider;
     }
 
     // ─── DbSets ───────────────────────────────────────────────
@@ -61,39 +62,39 @@ public class AppDbContext : DbContext
         // Solo aplican si NO es admin de plataforma
         modelBuilder.Entity<Usuario>()
             .HasQueryFilter(u => 
-                _tenantService == null ||
-                _tenantService.EsAdminPlataforma() ||
-                u.SitioId == _tenantService.GetSitioId());
+                _sitioProvider == null ||
+                _sitioProvider.EsAdminPlataforma() ||
+                u.SitioId == _sitioProvider.GetSitioId());
 
         modelBuilder.Entity<Penca>()
             .HasQueryFilter(p =>
-                _tenantService == null ||
-                _tenantService.EsAdminPlataforma() ||
-                p.SitioId == _tenantService.GetSitioId());
+                _sitioProvider == null ||
+                _sitioProvider.EsAdminPlataforma() ||
+                p.SitioId == _sitioProvider.GetSitioId());
 
         modelBuilder.Entity<Invitacion>()
             .HasQueryFilter(i =>
-                _tenantService == null ||
-                _tenantService.EsAdminPlataforma() ||
-                i.SitioId == _tenantService.GetSitioId());
+                _sitioProvider == null ||
+                _sitioProvider.EsAdminPlataforma() ||
+                i.SitioId == _sitioProvider.GetSitioId());
 
         modelBuilder.Entity<MensajeChat>()
             .HasQueryFilter(m =>
-                _tenantService == null ||
-                _tenantService.EsAdminPlataforma() ||
-                m.Penca.SitioId == _tenantService.GetSitioId());
+                _sitioProvider == null ||
+                _sitioProvider.EsAdminPlataforma() ||
+                m.Penca.SitioId == _sitioProvider.GetSitioId());
 
         modelBuilder.Entity<Notificacion>()
             .HasQueryFilter(n =>
-                _tenantService == null ||
-                _tenantService.EsAdminPlataforma() ||
-                n.Penca.SitioId == _tenantService.GetSitioId());
+                _sitioProvider == null ||
+                _sitioProvider.EsAdminPlataforma() ||
+                n.Penca.SitioId == _sitioProvider.GetSitioId());
 
         modelBuilder.Entity<Prediccion>()
             .HasQueryFilter(p =>
-                _tenantService == null ||
-                _tenantService.EsAdminPlataforma() ||
-                p.Usuario.SitioId == _tenantService.GetSitioId());
+                _sitioProvider == null ||
+                _sitioProvider.EsAdminPlataforma() ||
+                p.Usuario.SitioId == _sitioProvider.GetSitioId());
 
         // ─── Enums como string en la BD ────────────────────────
         // Por defecto EF guarda enums como int (0,1,2)
