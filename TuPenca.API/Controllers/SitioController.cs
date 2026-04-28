@@ -32,12 +32,14 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpGet("obtener/{sitioId}")]
-        [Authorize("AdministradorSitio, AdministradorPlataforma")]
+        [Authorize(Roles = "AdministradorSitio,AdministradorPlataforma")] 
         public async Task<IActionResult> ObtenerSitioAsync(Guid sitioId)
         {
             try
             {
                 var response = await _sitioService.ObtenerSitioAsync(sitioId);
+                if (response == null)
+                    return NotFound("Sitio no encontrado");
                 return Ok(response);
             }
             catch (Exception ex)

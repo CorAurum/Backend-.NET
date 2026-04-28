@@ -33,10 +33,12 @@ namespace TuPenca.Application.Services
             return result;
         }
 
-        public async Task<SitioDto> ObtenerSitioAsync(Guid sitioId)
+        public async Task<SitioDto?> ObtenerSitioAsync(Guid sitioId)
         {
             var sitio = await _unitOfWork.Sitios.GetByIdAsync(sitioId);
-            return new SitioDto()
+            if (sitio == null) return null;
+
+            return new SitioDto
             {
                 Id = sitio.Id,
                 Nombre = sitio.Nombre,
@@ -106,7 +108,7 @@ namespace TuPenca.Application.Services
             {
                 Id = sitio.Id,
                 Nombre = sitio.Nombre,
-                Mensaje = "Sitio creado exitosamente"
+                Mensaje = "Sitio Eliminado exitosamente"
             };
         }
     }
