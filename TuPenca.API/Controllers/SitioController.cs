@@ -61,7 +61,7 @@ namespace TuPenca.API.Controllers
             }
         }
 
-        [HttpPost("actualizar")]
+        [HttpPut("actualizar")]
         [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> ActualizarSitioAsync([FromBody] SitioRequestDto sitioDto)
         {

@@ -74,26 +74,24 @@ namespace TuPenca.Application.Services
 
         public async Task<SitioResponseDto> ActualizarSitioAsync(SitioRequestDto sitioDto)
         {
-            sitioDto.Id = Guid.NewGuid();
+            var sitio = await _unitOfWork.Sitios.GetByIdAsync(sitioDto.Id);
+            if (sitio == null)
+                return new SitioResponseDto { Mensaje = "Sitio no encontrado" };
 
-            var sitio = new Sitio()
-            {
-                Id = sitioDto.Id,
-                Nombre = sitioDto.Nombre,
-                UrlPropia = sitioDto.UrlPropia,
-                ConfiguracionSitio = sitioDto.ConfiguracionSitio,
-                EsquemaColores = sitioDto.EsquemaColores,
-                TipoRegistro = sitioDto.TipoRegistro
-            };
+            sitio.Nombre = sitioDto.Nombre;
+            sitio.UrlPropia = sitioDto.UrlPropia;
+            sitio.ConfiguracionSitio = sitioDto.ConfiguracionSitio;
+            sitio.EsquemaColores = sitioDto.EsquemaColores;
+            sitio.TipoRegistro = sitioDto.TipoRegistro;
 
             await _unitOfWork.Sitios.UpdateAsync(sitio);
             await _unitOfWork.SaveChangesAsync();
 
-            return new SitioResponseDto()
+            return new SitioResponseDto
             {
                 Id = sitio.Id,
                 Nombre = sitio.Nombre,
-                Mensaje = "Sitio creado exitosamente"
+                Mensaje = "Sitio actualizado exitosamente"
             };
         }
 
