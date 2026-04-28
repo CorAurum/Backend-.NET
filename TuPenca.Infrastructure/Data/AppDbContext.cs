@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TuPenca.Application.Interfaces.Services;
 using TuPenca.Domain.Entities;
-using TuPenca.Domain.Enums;
 using TuPenca.Infrastructure.Interfaces.Providers;
 
 public class AppDbContext : DbContext

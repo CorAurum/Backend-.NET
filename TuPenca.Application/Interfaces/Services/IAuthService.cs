@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TuPenca.Application.DTOs.Auth;
+﻿using TuPenca.Application.DTOs.Auth;
 
 namespace TuPenca.Application.Interfaces.Services
 {

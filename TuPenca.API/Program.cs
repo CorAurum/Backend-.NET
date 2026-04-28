@@ -102,44 +102,44 @@ app.MapControllers();
 // app.MapHub<ResultadosHub>("/hubs/resultados");
 
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    if (!db.Sitios.Any())
-    {
-        var sitio = new Sitio
-        {
-            Id = Guid.NewGuid(),
-            Nombre = "Empresa1",
-            UrlPropia = "empresa1.local",
-            EsquemaColores = ""
-        };
+//    if (!db.Sitios.Any())
+//    {
+//        var sitio = new Sitio
+//        {
+//            Id = Guid.NewGuid(),
+//            Nombre = "Empresa1",
+//            UrlPropia = "empresa1.local",
+//            EsquemaColores = ""
+//        };
 
-        db.Sitios.Add(sitio);
+//        db.Sitios.Add(sitio);
 
-        var sitio2= new Sitio
-        {
-            Id = Guid.NewGuid(),
-            Nombre = "Empresa2",
-            UrlPropia = "empresa2.local",
-            EsquemaColores = ""
-        };
+//        var sitio2= new Sitio
+//        {
+//            Id = Guid.NewGuid(),
+//            Nombre = "Empresa2",
+//            UrlPropia = "empresa2.local",
+//            EsquemaColores = ""
+//        };
 
-        db.Sitios.Add(sitio2);
+//        db.Sitios.Add(sitio2);
 
-        db.Usuarios.Add(new Usuario
-        {
-            Id = Guid.NewGuid(),
-            Nombre = "Admin Empresa1",
-            Email = "admin@admin.com",
-            PasswordHash = "123",
-            Rol = TuPenca.Domain.Enums.RolUsuario.AdministradorSitio,
-            SitioId = sitio.Id
-        });
+//        db.Usuarios.Add(new Usuario
+//        {
+//            Id = Guid.NewGuid(),
+//            Nombre = "Admin Empresa1",
+//            Email = "admin@admin.com",
+//            PasswordHash = "123",
+//            Rol = TuPenca.Domain.Enums.RolUsuario.AdministradorSitio,
+//            SitioId = sitio.Id
+//        });
 
-        db.SaveChanges();
-    }
-}
+//        db.SaveChanges();
+//    }
+//}
 
 app.Run();

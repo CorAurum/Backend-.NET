@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TuPenca.Application.DTOs.Auth;
 using TuPenca.Application.Interfaces.Services;
 using TuPenca.Infrastructure.Interfaces.Providers;
@@ -48,6 +49,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("registro/administrador")]
+    [Authorize(Roles = "AdministradorPlataforma")]
     public async Task<IActionResult> RegistrarAdmin([FromBody] RegistroAdminRequestDto request)
     {
         try

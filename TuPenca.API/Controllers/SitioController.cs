@@ -1,8 +1,7 @@
-﻿using Azure.Core;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TuPenca.Application.DTOs.Sitio;
 using TuPenca.Application.Interfaces.Services;
-using TuPenca.Domain.Entities;
 
 namespace TuPenca.API.Controllers
 {
@@ -17,7 +16,8 @@ namespace TuPenca.API.Controllers
             _sitioService = sitioService;
         }
 
-        [HttpGet]
+        [HttpGet("obtener/todos")]
+        [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> ObtenerSitiosAsync()
         {
             try
@@ -31,7 +31,8 @@ namespace TuPenca.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("obtener/{sitioId}")]
+        [Authorize("AdministradorSitio, AdministradorPlataforma")]
         public async Task<IActionResult> ObtenerSitioAsync(Guid sitioId)
         {
             try
@@ -45,7 +46,8 @@ namespace TuPenca.API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("crear")]
+        [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> CrearSitioAsync([FromBody] SitioRequestDto sitioDto)
         {
             try
@@ -59,16 +61,35 @@ namespace TuPenca.API.Controllers
             }
         }
 
-        //// PUT api/<SitioController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        [HttpPost("actualizar")]
+        [Authorize(Roles = "AdministradorPlataforma")]
+        public async Task<IActionResult> ActualizarSitioAsync([FromBody] SitioRequestDto sitioDto)
+        {
+            try
+            {
+                var response = await _sitioService.ActualizarSitioAsync(sitioDto);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //// DELETE api/<SitioController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        [HttpPost("eliminar/{sitioId}")]
+        [Authorize(Roles = "AdministradorPlataforma")]
+        public async Task<IActionResult> EliminarSitioAsync(Guid sitioId)
+        {
+            try
+            {
+                var response = await _sitioService.EliminarSitioAsync(sitioId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

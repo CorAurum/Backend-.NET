@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TuPenca.Application.DTOs.Sitio;
-using TuPenca.Domain.Entities;
-using TuPenca.Domain.Interfaces;
+﻿using TuPenca.Application.DTOs.Sitio;
 
 namespace TuPenca.Application.Interfaces.Services
 {
     public interface ISitioService
     {
-        Task<IEnumerable<SitioResponseDto>> ObtenerSitiosAsync();
+        Task<IEnumerable<SitioDto>> ObtenerSitiosAsync();
 
-        Task<SitioResponseDto> ObtenerSitioAsync(Guid sitioId);
+        Task<SitioDto> ObtenerSitioAsync(Guid sitioId);
 
         Task<SitioResponseDto> CrearSitioAsync(SitioRequestDto sitioDto);
+
+        Task<SitioResponseDto> ActualizarSitioAsync(SitioRequestDto sitioDto);
+
+        Task<SitioResponseDto> EliminarSitioAsync(Guid sitioId);
     }
 }
