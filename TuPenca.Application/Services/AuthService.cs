@@ -17,13 +17,13 @@ public class AuthService : IAuthService
         _jwtService = jwtService;
     }
 
-    public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request)
+    public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, Guid? sitioId)
     {
         // ¿Viene con SitioId? → es Usuario del sitio (común o admin de sitio)
-        if (request.SitioId.HasValue)
+        if (sitioId != null)
         {
             var usuario = await _unitOfWork.Usuarios
-                .GetByEmailAsync(request.Email, request.SitioId.Value);
+                .GetByEmailAsync(request.Email, sitioId.Value);
 
             if (usuario == null) return null;
 
@@ -88,9 +88,9 @@ public class AuthService : IAuthService
         }
     }
 
-    public async Task<RegistroResponseDto> RegistrarUsuarioAsync(RegistroUsuarioRequestDto request)
+    public async Task<RegistroResponseDto> RegistrarUsuarioAsync(RegistroUsuarioRequestDto request, Guid? sitioId)
     {
-        var sitio = await _unitOfWork.Sitios.GetByIdAsync(request.SitioId);
+        var sitio = await _unitOfWork.Sitios.GetByIdAsync(sitioId.Value);
         if (sitio == null)
             throw new Exception("Sitio no encontrado");
 
@@ -98,7 +98,7 @@ public class AuthService : IAuthService
             throw new Exception("Este sitio no acepta registros");
 
         var existente = await _unitOfWork.Usuarios
-            .GetByEmailAsync(request.Email, request.SitioId);
+            .GetByEmailAsync(request.Email, sitioId.Value);
         if (existente != null)
             throw new Exception("El email ya está en uso en este sitio");
 
@@ -129,8 +129,7 @@ public class AuthService : IAuthService
             Nombre = request.Nombre,
             Email = request.Email,
             PasswordHash = HashPassword(request.Password),
-            SitioId = request.SitioId,
-            TenantId = request.SitioId,
+            SitioId = sitioId.Value,
             Estado = estadoInicial,
             Rol = request.Rol, // ← viene del request, puede ser UsuarioComun o AdministradorSitio
             FechaRegistro = DateTime.UtcNow

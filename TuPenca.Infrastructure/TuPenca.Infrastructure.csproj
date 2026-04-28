@@ -7,12 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Email\**" />
+    <EmbeddedResource Remove="Email\**" />
+    <None Remove="Email\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TuPenca.Application\TuPenca.Application.csproj" />
     <ProjectReference Include="..\TuPenca.Domain\TuPenca.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Email\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

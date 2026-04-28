@@ -3,10 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TuPenca.Application.Interfaces.Services;
+using TuPenca.Application.Services;
+using TuPenca.Domain.Entities;
 using TuPenca.Domain.Interfaces;
 using TuPenca.Domain.Interfaces.Repositories;
 using TuPenca.Infrastructure.Data;
 using TuPenca.Infrastructure.Data.Repositories;
+using TuPenca.Infrastructure.Interfaces.Providers;
+using TuPenca.Infrastructure.Middleware;
+using TuPenca.Infrastructure.Providers;
 // using TuPenca.Infrastructure.Data;
 // revisar si es necesario
 
@@ -35,13 +40,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // ─── Multi-tenancy ────────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ITenantService, TenantService>();
+builder.Services.AddScoped<ISitioProvider, SitioProvider>();
 
 // ─── Repositorios y Unit of Work ─────────────────────────
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAdministradorRepository, AdministradorRepository>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<ISitioService, SitioService>();
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // ─── AutoMapper ───────────────────────────────────────────────
@@ -72,6 +80,9 @@ builder.Services.AddCors(options =>
 // builder.Services.AddScoped<IPencaService, PencaService>();
 
 var app = builder.Build();
+
+// ─── Middleware ───────────────────────────────────────────────
+app.UseMiddleware<SitioResolverMiddleware>();
 
 // ─── Middleware pipeline ──────────────────────────────────────
 if (app.Environment.IsDevelopment())

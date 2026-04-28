@@ -8,7 +8,5 @@ namespace TuPenca.Application.DTOs.Auth
     {
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-
-        public Guid? SitioId { get; set; } // nullable porque Administrador no lo necesita
     }
 }

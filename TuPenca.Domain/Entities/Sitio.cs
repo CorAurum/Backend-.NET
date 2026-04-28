@@ -22,7 +22,7 @@ namespace TuPenca.Domain.Entities
         public ICollection<Penca> Pencas { get; set; } = new List<Penca>();
 
         // 1 Sitio → N Administradores
-     //   public ICollection<Administrador> Administradores { get; set; } = new List<Administrador>();
+        // public ICollection<Administrador> Administradores { get; set; } = new List<Administrador>();
 
         // 1 Sitio → N Invitaciones
         public ICollection<Invitacion> Invitaciones { get; set; } = new List<Invitacion>();
