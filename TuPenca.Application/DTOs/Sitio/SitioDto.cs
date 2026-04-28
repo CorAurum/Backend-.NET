@@ -5,10 +5,13 @@ using TuPenca.Domain.Enums;
 
 namespace TuPenca.Application.DTOs.Sitio
 {
-    public class SitioResponseDto
+    public class SitioDto
     {
         public Guid Id { get; set; }
         public string Nombre { get; set; } = null!;
-        public string Mensaje { get; set; } = null!;
+        public string UrlPropia { get; set; } = null!;
+        public string EsquemaColores { get; set; }
+        public string? ConfiguracionSitio { get; set; }
+        public TipoRegistro TipoRegistro { get; set; }
     }
 }

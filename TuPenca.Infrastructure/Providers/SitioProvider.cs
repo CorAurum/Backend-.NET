@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 using TuPenca.Domain.Entities;
 using TuPenca.Infrastructure.Interfaces.Providers;
 
@@ -38,5 +35,6 @@ namespace TuPenca.Infrastructure.Providers
             return _httpContextAccessor.HttpContext?.User
                 .FindFirst(ClaimTypes.Role)?.Value == "AdministradorPlataforma";
         }
+
     }
 }
