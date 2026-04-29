@@ -8,6 +8,7 @@ namespace TuPenca.Domain.Entities
     {
         public string Nombre { get; set; } = null!;
         public string Descripcion { get; set; } = null!;
+        public int TiempoLimitePrevioMinutos { get; set; } = 60; // default 1 hora
 
         // N PlantillasPenca → 1 EventoDeportivo
         public Guid EventoDeportivoId { get; set; }

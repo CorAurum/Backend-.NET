@@ -24,11 +24,11 @@ namespace TuPenca.Infrastructure.Data
         public IRepository<MensajeChat> MensajesChat { get; }
         public IRepository<Notificacion> Notificaciones { get; }
         public IRepository<Invitacion> Invitaciones { get; }
-        public IRepository<PlantillaPenca> PlantillasPenca { get; }
+        public IPlantillaPencaRepository PlantillasPenca { get; }
         public IRepository<EventoDeportivo> EventosDeportivos { get; }
         public IRepository<Equipo> Equipos { get; }
 
-        public UnitOfWork(AppDbContext context, IUsuarioRepository usuarios, IAdministradorRepository administradores)
+        public UnitOfWork(AppDbContext context, IUsuarioRepository usuarios, IAdministradorRepository administradores, IPlantillaPencaRepository plantillaPenca)
         {
             _context = context;
             Usuarios = usuarios;
@@ -43,7 +43,7 @@ namespace TuPenca.Infrastructure.Data
             MensajesChat = new Repository<MensajeChat>(context);
             Notificaciones = new Repository<Notificacion>(context);
             Invitaciones = new Repository<Invitacion>(context);
-            PlantillasPenca = new Repository<PlantillaPenca>(context);
+            PlantillasPenca = plantillaPenca;
             EventosDeportivos = new Repository<EventoDeportivo>(context);
             Equipos = new Repository<Equipo>(context);
         }

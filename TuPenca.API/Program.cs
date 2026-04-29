@@ -42,13 +42,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ISitioProvider, SitioProvider>();
 
-// ─── Repositorios y Unit of Work ─────────────────────────
+// ─── Repositorios, Service y Unit of Work ─────────────────────────
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAdministradorRepository, AdministradorRepository>();
+builder.Services.AddScoped<IPlantillaPencaRepository, PlantillaPencaRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ISitioService, SitioService>();
+builder.Services.AddScoped<IEventoDeportivoService, EventoDeportivoService>();
+builder.Services.AddScoped<IPlantillaPencaService, PlantillaPencaService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -57,7 +60,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //revisar pq da error
 
 // ─── SignalR ──────────────────────────────────────────────────
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(); // revisar la logica
 
 // ─── Controllers + Swagger ────────────────────────────────────
 builder.Services.AddControllers();

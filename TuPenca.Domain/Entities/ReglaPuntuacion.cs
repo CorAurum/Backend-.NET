@@ -6,11 +6,12 @@ namespace TuPenca.Domain.Entities
 {
     public class ReglaPuntuacion : BaseEntity
     {
-        public string TipoAcierto { get; set; } = null!; // ej: "ResultadoExacto", "GanadorCorrecto"
+        // 0 = exacto, 1 = te desviaste 1 gol en total, etc.
+        public int Desviacion { get; set; }
         public int Puntaje { get; set; }
 
         // N Reglas → 1 PlantillaPenca
         public Guid PlantillaPencaId { get; set; }
-        public PlantillaPenca Plantilla { get; set; } = null!;
+        public PlantillaPenca Plantilla { get; set; } = null!; 
     }
 }

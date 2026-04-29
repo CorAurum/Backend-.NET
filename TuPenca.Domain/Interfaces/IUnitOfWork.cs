@@ -20,7 +20,7 @@ namespace TuPenca.Domain.Interfaces
         IRepository<MensajeChat> MensajesChat { get; }
         IRepository<Notificacion> Notificaciones { get; }
         IRepository<Invitacion> Invitaciones { get; }
-        IRepository<PlantillaPenca> PlantillasPenca { get; }
+        IPlantillaPencaRepository PlantillasPenca { get; }
         IRepository<EventoDeportivo> EventosDeportivos { get; }
         IRepository<Equipo> Equipos { get; }
 
