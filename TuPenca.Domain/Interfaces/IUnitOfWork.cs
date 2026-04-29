@@ -11,7 +11,7 @@ namespace TuPenca.Domain.Interfaces
         IUsuarioRepository Usuarios { get; }
         IAdministradorRepository Administrador { get; }
         IRepository<Sitio> Sitios { get; }
-        IRepository<Penca> Pencas { get; }
+        IPencaRepository Pencas { get; }
         IRepository<Partido> Partidos { get; }
         IRepository<Prediccion> Predicciones { get; }
         IRepository<PuntajeUsuario> PuntajesUsuario { get; }

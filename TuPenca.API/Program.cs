@@ -46,12 +46,14 @@ builder.Services.AddScoped<ISitioProvider, SitioProvider>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAdministradorRepository, AdministradorRepository>();
 builder.Services.AddScoped<IPlantillaPencaRepository, PlantillaPencaRepository>();
+builder.Services.AddScoped<IPencaRepository, PencaRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ISitioService, SitioService>();
 builder.Services.AddScoped<IEventoDeportivoService, EventoDeportivoService>();
 builder.Services.AddScoped<IPlantillaPencaService, PlantillaPencaService>();
+builder.Services.AddScoped<IPencaService, PencaService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

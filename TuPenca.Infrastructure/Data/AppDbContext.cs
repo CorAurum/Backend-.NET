@@ -121,6 +121,10 @@ public class AppDbContext : DbContext
             .Property(u => u.Rol)
             .HasConversion<string>();
 
+        modelBuilder.Entity<Penca>()
+            .Property(p => p.Estado)
+            .HasConversion<string>();
+
         //modelBuilder.Entity<Pago>()
         //    .Property(p => p.MetodoPago)
         //    .HasConversion<string>();
@@ -192,6 +196,8 @@ public class AppDbContext : DbContext
     .WithMany(u => u.Puntajes)
     .HasForeignKey(p => p.UsuarioId)
     .OnDelete(DeleteBehavior.NoAction);
+
+
 
     }
 }
