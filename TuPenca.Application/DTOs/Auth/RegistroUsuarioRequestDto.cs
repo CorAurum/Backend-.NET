@@ -9,5 +9,6 @@ namespace TuPenca.Application.DTOs.Auth
         public string Password { get; set; } = null!;
         public RolUsuario Rol { get; set; } = RolUsuario.UsuarioComun;
         public string? CodigoInvitacion { get; set; }
+        //public EstadoUsuario Estado { get; set; } = EstadoUsuario.Pendiente;
     }
 }

@@ -51,6 +51,7 @@ builder.Services.AddScoped<IPencaRepository, PencaRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<ISitioService, SitioService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IEquipoService, EquipoService>();
 builder.Services.AddScoped<IEventoDeportivoService, EventoDeportivoService>();
 builder.Services.AddScoped<IPlantillaPencaService, PlantillaPencaService>();

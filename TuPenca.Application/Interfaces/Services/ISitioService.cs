@@ -12,7 +12,7 @@ namespace TuPenca.Application.Interfaces.Services
 
         Task<SitioResponseDto> SolicitarSitioAsync(SitioPendienteRequestDto sitioDto);
 
-        Task<SitioResponseDto> ActualizarSitioPendienteAsync(SitioPendienteActualizarRequestDto sitioDto);
+        Task<SitioResponseDto> ActualizarSitioPendienteAsync(SitioActualizarEstadoRequest sitioDto);
 
         Task<SitioResponseDto> CrearSitioAsync(SitioRequestDto sitioDto);
 

@@ -16,7 +16,7 @@ namespace TuPenca.API.Controllers
         private readonly ISitioService _sitioService;
         private readonly IAuthService _authService;
         private readonly IUsuarioService _usuarioService;
-        private readonly Guid? _sitioId;
+        private readonly ISitioProvider _sitioProvider;
 
         public SitioController(ISitioService sitioService, 
             IAuthService authService,
@@ -26,7 +26,7 @@ namespace TuPenca.API.Controllers
             _sitioService = sitioService;
             _authService = authService;
             _usuarioService = usuarioService;
-            _sitioId = sitioProvider.GetSitioId();
+            _sitioProvider = sitioProvider;
         }
 
         [HttpGet("obtener/todos")]
@@ -76,7 +76,7 @@ namespace TuPenca.API.Controllers
             }
         }
 
-        [HttpPost("pendiente/solicitar")]
+        [HttpPost("solicitar")]
         public async Task<IActionResult> SolicitarSitioAsync([FromBody] SitioPendienteRequestDto solicitarSitioDto)
         {
             try
@@ -94,7 +94,7 @@ namespace TuPenca.API.Controllers
                     Rol = Domain.Enums.RolUsuario.AdministradorSitio
                 };
                 
-                await _authService.RegistrarUsuarioAsync(userRequest, _sitioId);
+                await _authService.RegistrarUsuarioAsync(userRequest, response.Id);
 
                 return Ok(response);
             }
@@ -104,9 +104,9 @@ namespace TuPenca.API.Controllers
             }
         }
 
-        [HttpPost("pendiente/actualizar")]
+        [HttpPost("actualizar/estado")]
         [Authorize(Roles = "AdministradorPlataforma")]
-        public async Task<IActionResult> ActualizarSitioPendienteAsync([FromBody] SitioPendienteActualizarRequestDto sitioDto)
+        public async Task<IActionResult> ActualizarSitioPendienteAsync([FromBody] SitioActualizarEstadoRequest sitioDto)
         {
             try
             {

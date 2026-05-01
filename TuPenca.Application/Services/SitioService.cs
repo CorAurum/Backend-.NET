@@ -96,7 +96,7 @@ namespace TuPenca.Application.Services
             };
         }
 
-        public async Task<SitioResponseDto> ActualizarSitioPendienteAsync(SitioPendienteActualizarRequestDto sitioDto)
+        public async Task<SitioResponseDto> ActualizarSitioPendienteAsync(SitioActualizarEstadoRequest sitioDto)
         {
             var sitio = await _unitOfWork.Sitios.GetByIdAsync(sitioDto.Id);
             if (sitio == null)
@@ -127,7 +127,8 @@ namespace TuPenca.Application.Services
                 ConfiguracionSitio = sitioDto.ConfiguracionSitio,
                 ColorPrimario = sitioDto.ColorPrimario,
                 ColorSecundario = sitioDto.ColorSecundario,
-                TipoRegistro = sitioDto.TipoRegistro
+                TipoRegistro = sitioDto.TipoRegistro,
+                Estado = sitioDto.Estado
             };
 
             await _unitOfWork.Sitios.AddAsync(sitio);
@@ -153,6 +154,7 @@ namespace TuPenca.Application.Services
             sitio.ColorPrimario = sitioDto.ColorPrimario;
             sitio.ColorSecundario = sitioDto.ColorSecundario;
             sitio.TipoRegistro = sitioDto.TipoRegistro;
+            sitio.Estado = sitio.Estado;
 
             await _unitOfWork.Sitios.UpdateAsync(sitio);
             await _unitOfWork.SaveChangesAsync();

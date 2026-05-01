@@ -2,7 +2,7 @@
 
 namespace TuPenca.Application.DTOs.Sitio
 {
-    public class SitioPendienteActualizarRequestDto
+    public class SitioActualizarEstadoRequest
     {
         public Guid Id { get; set; }
         public EstadoSitio Estado { get; set; }
