@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TuPenca.Domain.Enums;
+﻿using TuPenca.Domain.Enums;
 
 namespace TuPenca.Application.DTOs.Sitio
 {
@@ -10,7 +7,8 @@ namespace TuPenca.Application.DTOs.Sitio
         public Guid Id { get; set; }
         public string Nombre { get; set; } = null!;
         public string UrlPropia { get; set; } = null!;
-        public string EsquemaColores { get; set; } = null!;
+        public string ColorPrimario { get; set; } = null!;
+        public string ColorSecundario { get; set; } = null!;
         public string? ConfiguracionSitio { get; set; }
         public TipoRegistro TipoRegistro { get; set; } = TipoRegistro.Abierta;
     }
