@@ -26,7 +26,8 @@ namespace TuPenca.Application.Services
                     Nombre = sitio.Nombre,
                     UrlPropia = sitio.UrlPropia,
                     ConfiguracionSitio = sitio.ConfiguracionSitio,
-                    EsquemaColores = sitio.EsquemaColores,
+                    ColorPrimario = sitio.ColorPrimario,
+                    ColorSecundario = sitio.ColorSecundario,
                     TipoRegistro = sitio.TipoRegistro
                 });
             }
@@ -44,8 +45,73 @@ namespace TuPenca.Application.Services
                 Nombre = sitio.Nombre,
                 UrlPropia = sitio.UrlPropia,
                 ConfiguracionSitio = sitio.ConfiguracionSitio,
-                EsquemaColores = sitio.EsquemaColores,
+                ColorPrimario = sitio.ColorPrimario,
+                ColorSecundario = sitio.ColorSecundario,
                 TipoRegistro = sitio.TipoRegistro
+            };
+        }
+
+        public async Task<IEnumerable<SitioDto>> ObtenerSitiosPendientesAsync()
+        {
+            var sitios = await _unitOfWork.Sitios.GetAllAsync();
+            sitios = sitios.Where(s => s.Estado == Domain.Enums.EstadoSitio.Pendiente);
+            var result = new List<SitioDto>();
+            foreach (var sitio in sitios)
+            {
+                result.Add(new SitioDto()
+                {
+                    Id = sitio.Id,
+                    Nombre = sitio.Nombre,
+                    UrlPropia = sitio.UrlPropia,
+                    ConfiguracionSitio = sitio.ConfiguracionSitio,
+                    ColorPrimario = sitio.ColorPrimario,
+                    ColorSecundario = sitio.ColorSecundario,
+                    TipoRegistro = sitio.TipoRegistro
+                });
+            }
+            return result;
+        }
+
+        public async Task<SitioResponseDto> SolicitarSitioAsync(SitioPendienteRequestDto sitioDto)
+        {
+            var sitio = new Sitio()
+            {
+                Id = Guid.NewGuid(),
+                Nombre = sitioDto.Nombre,
+                UrlPropia = sitioDto.UrlPropia,
+                ConfiguracionSitio = sitioDto.ConfiguracionSitio,
+                ColorPrimario = sitioDto.ColorPrimario,
+                ColorSecundario = sitioDto.ColorSecundario,
+                TipoRegistro = sitioDto.TipoRegistro
+            };
+
+            await _unitOfWork.Sitios.AddAsync(sitio);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new SitioResponseDto()
+            {
+                Id = sitio.Id,
+                Nombre = sitio.Nombre,
+                Mensaje = "Solicitud de sitio creada exitosamente."
+            };
+        }
+
+        public async Task<SitioResponseDto> ActualizarSitioPendienteAsync(SitioActualizarEstadoRequest sitioDto)
+        {
+            var sitio = await _unitOfWork.Sitios.GetByIdAsync(sitioDto.Id);
+            if (sitio == null)
+                return new SitioResponseDto { Mensaje = "Sitio no encontrado" };
+
+            sitio.Estado = sitioDto.Estado;
+
+            await _unitOfWork.Sitios.UpdateAsync(sitio);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new SitioResponseDto
+            {
+                Id = sitio.Id,
+                Nombre = sitio.Nombre,
+                Mensaje = "Sitio actualizado exitosamente"
             };
         }
 
@@ -59,8 +125,10 @@ namespace TuPenca.Application.Services
                 Nombre = sitioDto.Nombre,
                 UrlPropia = sitioDto.UrlPropia,
                 ConfiguracionSitio = sitioDto.ConfiguracionSitio,
-                EsquemaColores = sitioDto.EsquemaColores,
-                TipoRegistro = sitioDto.TipoRegistro
+                ColorPrimario = sitioDto.ColorPrimario,
+                ColorSecundario = sitioDto.ColorSecundario,
+                TipoRegistro = sitioDto.TipoRegistro,
+                Estado = sitioDto.Estado
             };
 
             await _unitOfWork.Sitios.AddAsync(sitio);
@@ -83,8 +151,10 @@ namespace TuPenca.Application.Services
             sitio.Nombre = sitioDto.Nombre;
             sitio.UrlPropia = sitioDto.UrlPropia;
             sitio.ConfiguracionSitio = sitioDto.ConfiguracionSitio;
-            sitio.EsquemaColores = sitioDto.EsquemaColores;
+            sitio.ColorPrimario = sitioDto.ColorPrimario;
+            sitio.ColorSecundario = sitioDto.ColorSecundario;
             sitio.TipoRegistro = sitioDto.TipoRegistro;
+            sitio.Estado = sitio.Estado;
 
             await _unitOfWork.Sitios.UpdateAsync(sitio);
             await _unitOfWork.SaveChangesAsync();
@@ -100,6 +170,8 @@ namespace TuPenca.Application.Services
         public async Task<SitioResponseDto> EliminarSitioAsync(Guid sitioId)
         {
             var sitio = await _unitOfWork.Sitios.GetByIdAsync(sitioId);
+            if (sitio == null)
+                return new SitioResponseDto { Mensaje = "Sitio no encontrado" };
 
             await _unitOfWork.Sitios.DeleteAsync(sitioId);
             await _unitOfWork.SaveChangesAsync();

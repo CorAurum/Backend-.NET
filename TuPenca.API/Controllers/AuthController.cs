@@ -9,23 +9,21 @@ using TuPenca.Infrastructure.Interfaces.Providers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly ISitioProvider _sitioProvider;
+    private readonly Guid? _sitioId;
 
     public AuthController(IAuthService authService, ISitioProvider sitioProvider)
     {
         _authService = authService;
-        _sitioProvider = sitioProvider;
+        _sitioId = sitioProvider.GetSitioId();
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
-        var sitioId = _sitioProvider.GetSitioId();
-
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             return BadRequest("Email y contraseña son requeridos");
 
-        var response = await _authService.LoginAsync(request, sitioId);
+        var response = await _authService.LoginAsync(request, _sitioId);
 
         if (response == null)
             return Unauthorized("Credenciales incorrectas");
@@ -38,8 +36,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var sitioId = _sitioProvider.GetSitioId();
-            var response = await _authService.RegistrarUsuarioAsync(request, sitioId);
+            var response = await _authService.RegistrarUsuarioAsync(request, _sitioId);
             return Ok(response);
         }
         catch (Exception ex)
