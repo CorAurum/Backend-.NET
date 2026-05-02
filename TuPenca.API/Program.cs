@@ -57,6 +57,7 @@ builder.Services.AddScoped<IEquipoService, EquipoService>();
 builder.Services.AddScoped<IEventoDeportivoService, EventoDeportivoService>();
 builder.Services.AddScoped<IPlantillaPencaService, PlantillaPencaService>();
 builder.Services.AddScoped<IPencaService, PencaService>();
+builder.Services.AddScoped<IPrediccionService, PrediccionService>();
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
