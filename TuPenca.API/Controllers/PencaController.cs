@@ -9,7 +9,6 @@ namespace TuPenca.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "AdministradorSitio")]
     public class PencaController : ControllerBase
     {
         private readonly IPencaService _pencaService;
@@ -20,6 +19,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "AdministradorSitio")]
         public async Task<IActionResult> ObtenerTodas()
         {
             var response = await _pencaService.ObtenerTodasAsync();
@@ -27,6 +27,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "AdministradorSitio")]
         public async Task<IActionResult> ObtenerPorId(Guid id)
         {
             var response = await _pencaService.ObtenerPorIdAsync(id);
@@ -35,6 +36,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpPost("crear")]
+        [Authorize(Roles = "AdministradorSitio")]
         public async Task<IActionResult> Crear([FromBody] PencaRequestDto dto)
         {
             try
@@ -54,6 +56,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpPut("{id}/estado")]
+        [Authorize(Roles = "AdministradorSitio")]
         public async Task<IActionResult> CambiarEstado(Guid id, [FromBody] EstadoPenca nuevoEstado)
         {
             try
@@ -68,6 +71,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "AdministradorSitio")]
         public async Task<IActionResult> Eliminar(Guid id)
         {
             try
@@ -80,5 +84,26 @@ namespace TuPenca.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        // Tabla posicion
+
+        [HttpGet("{pencaId}/tabla-posiciones")]
+        [Authorize(Roles = "UsuarioComun,AdministradorSitio,AdministradorPlataforma")]
+        public async Task<IActionResult> ObtenerTablaPosiciones(Guid pencaId)
+        {
+            try
+            {
+                var usuarioId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+                var rol = User.FindFirst(ClaimTypes.Role)!.Value;
+                var response = await _pencaService.ObtenerTablaPosicionesAsync(pencaId, usuarioId, rol);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

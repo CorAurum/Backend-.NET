@@ -13,5 +13,9 @@ namespace TuPenca.Application.Interfaces.Services
         Task<PencaResponseDto> CrearAsync(PencaRequestDto dto, Guid sitioId);
         Task<PencaResponseDto> CambiarEstadoAsync(Guid id, EstadoPenca nuevoEstado);
         Task EliminarAsync(Guid id);
+
+        //tabla posicion
+
+        Task<TablaPosicionesDto> ObtenerTablaPosicionesAsync(Guid pencaId, Guid usuarioId, string rol);
     }
 }

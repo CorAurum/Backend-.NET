@@ -12,10 +12,12 @@ namespace TuPenca.Application.Services
     public class PencaService : IPencaService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPagoService _pagoService;
 
-        public PencaService(IUnitOfWork unitOfWork)
+        public PencaService(IUnitOfWork unitOfWork, IPagoService pagoService)
         {
             _unitOfWork = unitOfWork;
+            _pagoService = pagoService;
         }
 
         public async Task<IEnumerable<PencaResponseDto>> ObtenerTodasAsync()
@@ -106,5 +108,48 @@ namespace TuPenca.Application.Services
             await _unitOfWork.Pencas.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
         }
+
+        public async Task<TablaPosicionesDto> ObtenerTablaPosicionesAsync(Guid pencaId, Guid usuarioId, string rol)
+        {
+            var penca = await _unitOfWork.Pencas.GetByIdAsync(pencaId);
+            if (penca == null)
+                throw new Exception("Penca no encontrada");
+
+            // Verificar acceso si es usuario común
+            if (rol == "UsuarioComun")
+            {
+                var tienePago = await _pagoService.UsuarioPagoEnPencaAsync(usuarioId, pencaId);
+                if (!tienePago)
+                    throw new Exception("Debes estar inscripto en la penca para ver la tabla de posiciones");
+            }
+
+            // Traer todos los puntajes de la penca
+            var puntajes = await _unitOfWork.PuntajesUsuario.GetByPencaAsync(pencaId);
+
+            // Agrupar por usuario y sumar puntos
+            var agrupados = puntajes
+                .GroupBy(p => new { p.UsuarioId, p.Usuario.Nombre })
+                .Select(g => new PosicionUsuarioDto
+                {
+                    UsuarioId = g.Key.UsuarioId,
+                    NombreUsuario = g.Key.Nombre,
+                    PuntosTotales = g.Sum(p => p.PuntosPartido),
+                    PartidosPredichos = g.Count()
+                })
+                .OrderByDescending(p => p.PuntosTotales)
+                .ToList();
+
+            // Asignar posiciones
+            for (int i = 0; i < agrupados.Count; i++)
+                agrupados[i].Posicion = i + 1;
+
+            return new TablaPosicionesDto
+            {
+                PencaId = pencaId,
+                NombrePenca = penca.Nombre,
+                Posiciones = agrupados
+            };
+        }
+
     }
 }
