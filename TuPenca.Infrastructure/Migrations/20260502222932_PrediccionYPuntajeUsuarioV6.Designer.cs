@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TuPenca.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502222932_PrediccionYPuntajeUsuarioV6")]
+    partial class PrediccionYPuntajeUsuarioV6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,15 +274,10 @@ namespace TuPenca.Infrastructure.Migrations
                     b.Property<int>("Monto")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("PencaId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PencaId");
 
                     b.HasIndex("UsuarioId");
 
@@ -734,19 +732,11 @@ namespace TuPenca.Infrastructure.Migrations
 
             modelBuilder.Entity("TuPenca.Domain.Entities.Pago", b =>
                 {
-                    b.HasOne("TuPenca.Domain.Entities.Penca", "Penca")
-                        .WithMany()
-                        .HasForeignKey("PencaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("TuPenca.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Pagos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Penca");
 
                     b.Navigation("Usuario");
                 });

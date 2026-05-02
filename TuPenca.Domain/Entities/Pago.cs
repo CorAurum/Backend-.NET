@@ -15,5 +15,8 @@ namespace TuPenca.Domain.Entities
         // N Pagos → 1 Usuario
         public Guid UsuarioId { get; set; }
         public Usuario Usuario { get; set; } = null!;
+
+        public Guid PencaId { get; set; }
+        public Penca Penca { get; set; } = null!;
     }
 }

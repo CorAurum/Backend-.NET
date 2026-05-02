@@ -16,5 +16,8 @@ namespace TuPenca.Domain.Entities
         // N Predicciones → 1 Partido
         public Guid PartidoId { get; set; }
         public Partido Partido { get; set; } = null!;
+
+        public Guid PencaId { get; set; }
+        public Penca Penca { get; set; } = null!;
     }
 }

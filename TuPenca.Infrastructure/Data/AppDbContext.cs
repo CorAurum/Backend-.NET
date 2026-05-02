@@ -197,7 +197,23 @@ public class AppDbContext : DbContext
     .HasForeignKey(p => p.UsuarioId)
     .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<Prediccion>()
+    .HasOne(p => p.Penca)
+    .WithMany()
+    .HasForeignKey(p => p.PencaId)
+    .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<PuntajeUsuario>()
+     .HasOne(p => p.Partido)
+     .WithMany()
+     .HasForeignKey(p => p.PartidoId)
+     .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Pago>()
+     .HasOne(p => p.Penca)
+     .WithMany()
+     .HasForeignKey(p => p.PencaId)
+     .OnDelete(DeleteBehavior.NoAction);
 
     }
 }

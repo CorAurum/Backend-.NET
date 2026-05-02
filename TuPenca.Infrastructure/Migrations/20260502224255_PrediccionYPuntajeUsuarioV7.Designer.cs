@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TuPenca.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260501194143_UpdateSitio")]
-    partial class UpdateSitio
+    [Migration("20260502224255_PrediccionYPuntajeUsuarioV7")]
+    partial class PrediccionYPuntajeUsuarioV7
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -274,10 +274,15 @@ namespace TuPenca.Infrastructure.Migrations
                     b.Property<int>("Monto")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("PencaId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PencaId");
 
                     b.HasIndex("UsuarioId");
 
@@ -418,12 +423,17 @@ namespace TuPenca.Infrastructure.Migrations
                     b.Property<Guid>("PartidoId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("PencaId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PartidoId");
+
+                    b.HasIndex("PencaId");
 
                     b.HasIndex("UsuarioId");
 
@@ -474,16 +484,21 @@ namespace TuPenca.Infrastructure.Migrations
                     b.Property<DateTime?>("FechaModificacion")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("PartidoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("PencaId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("PuntosTotales")
+                    b.Property<int>("PuntosPartido")
                         .HasColumnType("int");
 
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PartidoId");
 
                     b.HasIndex("PencaId");
 
@@ -722,11 +737,19 @@ namespace TuPenca.Infrastructure.Migrations
 
             modelBuilder.Entity("TuPenca.Domain.Entities.Pago", b =>
                 {
+                    b.HasOne("TuPenca.Domain.Entities.Penca", "Penca")
+                        .WithMany()
+                        .HasForeignKey("PencaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("TuPenca.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Pagos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Penca");
 
                     b.Navigation("Usuario");
                 });
@@ -796,6 +819,12 @@ namespace TuPenca.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TuPenca.Domain.Entities.Penca", "Penca")
+                        .WithMany()
+                        .HasForeignKey("PencaId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("TuPenca.Domain.Entities.Usuario", "Usuario")
                         .WithMany("Predicciones")
                         .HasForeignKey("UsuarioId")
@@ -803,6 +832,8 @@ namespace TuPenca.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Partido");
+
+                    b.Navigation("Penca");
 
                     b.Navigation("Usuario");
                 });
@@ -820,6 +851,12 @@ namespace TuPenca.Infrastructure.Migrations
 
             modelBuilder.Entity("TuPenca.Domain.Entities.PuntajeUsuario", b =>
                 {
+                    b.HasOne("TuPenca.Domain.Entities.Partido", "Partido")
+                        .WithMany()
+                        .HasForeignKey("PartidoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("TuPenca.Domain.Entities.Penca", "Penca")
                         .WithMany("Puntajes")
                         .HasForeignKey("PencaId")
@@ -831,6 +868,8 @@ namespace TuPenca.Infrastructure.Migrations
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Partido");
 
                     b.Navigation("Penca");
 
