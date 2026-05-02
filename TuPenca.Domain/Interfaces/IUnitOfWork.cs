@@ -13,8 +13,8 @@ namespace TuPenca.Domain.Interfaces
         IRepository<Sitio> Sitios { get; }
         IPencaRepository Pencas { get; }
         IRepository<Partido> Partidos { get; }
-        IRepository<Prediccion> Predicciones { get; }
-        IRepository<PuntajeUsuario> PuntajesUsuario { get; }
+        IPrediccionRepository Predicciones { get; }
+        IPuntajeUsuarioRepository PuntajesUsuario { get; }
         IRepository<Premio> Premios { get; }
         IRepository<Pago> Pagos { get; }
         IRepository<MensajeChat> MensajesChat { get; }

@@ -12,5 +12,8 @@ namespace TuPenca.Application.Interfaces.Services
         Task<EventoDeportivoResponseDto?> ObtenerPorIdAsync(Guid id);
         Task<EventoDeportivoResponseDto> CrearAsync(EventoDeportivoRequestDto dto);
         Task<PartidoResponseDto> AgregarPartidoAsync(PartidoRequestDto dto);
+
+        // Para calculo de resultados
+        Task<ResultadoResponseDto> CargarResultadoAsync(ResultadoRequestDto dto);
     }
 }

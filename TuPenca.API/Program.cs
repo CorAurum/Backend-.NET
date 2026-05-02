@@ -47,6 +47,8 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAdministradorRepository, AdministradorRepository>();
 builder.Services.AddScoped<IPlantillaPencaRepository, PlantillaPencaRepository>();
 builder.Services.AddScoped<IPencaRepository, PencaRepository>();
+builder.Services.AddScoped<IPrediccionRepository, PrediccionRepository>();
+builder.Services.AddScoped<IPuntajeUsuarioRepository, PuntajeUsuarioRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();

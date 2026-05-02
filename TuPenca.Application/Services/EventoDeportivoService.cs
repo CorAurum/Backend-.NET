@@ -13,6 +13,7 @@ namespace TuPenca.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
+
         public EventoDeportivoService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -105,5 +106,79 @@ namespace TuPenca.Application.Services
                 EquipoVisitante = equipoVisitante.Nombre
             };
         }
+
+
+        public async Task<ResultadoResponseDto> CargarResultadoAsync(ResultadoRequestDto dto)
+        {
+            // 1. Verificar que el partido existe
+            var partido = await _unitOfWork.Partidos.GetByIdAsync(dto.PartidoId);
+            if (partido == null)
+                throw new Exception("Partido no encontrado");
+
+            // 2. Cargar resultado
+            partido.ResultadoLocal = dto.GolesLocal;
+            partido.ResultadoVisitante = dto.GolesVisitante;
+            await _unitOfWork.Partidos.UpdateAsync(partido);
+
+            // 3. Traer todas las predicciones de este partido con detalle
+            var predicciones = await _unitOfWork.Predicciones.GetByPartidoConDetalleAsync(dto.PartidoId);
+
+            int usuariosActualizados = 0;
+
+            foreach (var prediccion in predicciones)
+            {
+                // 4. Calcular desviacion
+                var desviacion = Math.Abs(dto.GolesLocal - prediccion.GolesLocal)
+                               + Math.Abs(dto.GolesVisitante - prediccion.GolesVisitante);
+
+                // 5. Buscar puntaje en reglas de la plantilla de esa penca
+                var reglas = prediccion.Penca.Plantilla.Reglas
+                    .OrderBy(r => r.Desviacion)
+                    .ToList();
+
+                var regla = reglas.FirstOrDefault(r => r.Desviacion == desviacion);
+                var puntos = regla?.Puntaje ?? 0;
+
+                // 6. Buscar si ya existe un PuntajeUsuario para este usuario/penca/partido
+                var puntajeExistente = await _unitOfWork.PuntajesUsuario
+                    .GetByUsuarioPencaPartidoAsync(prediccion.UsuarioId, prediccion.PencaId, dto.PartidoId);
+
+                if (puntajeExistente != null)
+                {
+                    puntajeExistente.PuntosPartido = puntos;
+                    await _unitOfWork.PuntajesUsuario.UpdateAsync(puntajeExistente);
+                }
+                else
+                {
+                    var nuevoPuntaje = new PuntajeUsuario
+                    {
+                        Id = Guid.NewGuid(),
+                        UsuarioId = prediccion.UsuarioId,
+                        PencaId = prediccion.PencaId,
+                        PartidoId = dto.PartidoId,
+                        PuntosPartido = puntos
+                    };
+                    await _unitOfWork.PuntajesUsuario.AddAsync(nuevoPuntaje);
+                }
+
+                usuariosActualizados++;
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+
+            var equipoLocal = await _unitOfWork.Equipos.GetByIdAsync(partido.EquipoLocalId);
+            var equipoVisitante = await _unitOfWork.Equipos.GetByIdAsync(partido.EquipoVisitanteId);
+
+            return new ResultadoResponseDto
+            {
+                PartidoId = partido.Id,
+                EquipoLocal = equipoLocal?.Nombre ?? string.Empty,
+                EquipoVisitante = equipoVisitante?.Nombre ?? string.Empty,
+                GolesLocal = dto.GolesLocal,
+                GolesVisitante = dto.GolesVisitante,
+                UsuariosActualizados = usuariosActualizados
+            };
+        }
+
     }
 }

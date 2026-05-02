@@ -60,5 +60,21 @@ namespace TuPenca.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpPost("resultado/cargar")]
+        public async Task<IActionResult> CargarResultado([FromBody] ResultadoRequestDto dto)
+        {
+            try
+            {
+                var response = await _eventoService.CargarResultadoAsync(dto);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
