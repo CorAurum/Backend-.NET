@@ -215,5 +215,11 @@ public class AppDbContext : DbContext
      .HasForeignKey(p => p.PencaId)
      .OnDelete(DeleteBehavior.NoAction);
 
+        modelBuilder.Entity<Premio>()
+    .HasOne(p => p.UsuarioGanador)
+    .WithMany()
+    .HasForeignKey(p => p.UsuarioGanadorId)
+    .OnDelete(DeleteBehavior.NoAction);
+
     }
 }

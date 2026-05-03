@@ -11,6 +11,11 @@ namespace TuPenca.Application.DTOs.PlantillaPenca
         public int TiempoLimitePrevioMinutos { get; set; }
         public Guid EventoDeportivoId { get; set; }
         public List<ReglaPuntuacionDto> Reglas { get; set; } = new();
+
+        // atributos para premios
+
+        public int MontoEntrada { get; set; }
+        public int PorcentajeComision { get; set; }
     }
 
     public class ReglaPuntuacionDto

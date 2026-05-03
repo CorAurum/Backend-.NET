@@ -19,5 +19,10 @@ namespace TuPenca.Domain.Entities
 
         // 1 PlantillaPenca → N Pencas
         public ICollection<Penca> Pencas { get; set; } = new List<Penca>();
+
+        // Atributos para premios
+
+        public int MontoEntrada { get; set; }
+        public int PorcentajeComision { get; set; }
     }
 }

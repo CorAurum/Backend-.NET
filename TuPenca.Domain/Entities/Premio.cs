@@ -13,5 +13,10 @@ namespace TuPenca.Domain.Entities
         // N Premios → 1 Penca
         public Guid PencaId { get; set; }
         public Penca Penca { get; set; } = null!;
+
+        // atributos para premios
+
+        public Guid? UsuarioGanadorId { get; set; }
+        public Usuario? UsuarioGanador { get; set; }
     }
 }
