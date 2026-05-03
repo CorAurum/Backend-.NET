@@ -105,5 +105,22 @@ namespace TuPenca.API.Controllers
             }
         }
 
+        // Ganadores
+
+        [HttpGet("{pencaId}/ganadores")]
+        [Authorize(Roles = "UsuarioComun,AdministradorSitio,AdministradorPlataforma")]
+        public async Task<IActionResult> ObtenerGanadores(Guid pencaId)
+        {
+            try
+            {
+                var response = await _pencaService.ObtenerGanadoresAsync(pencaId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

@@ -15,7 +15,10 @@ namespace TuPenca.Application.Interfaces.Services
         Task EliminarAsync(Guid id);
 
         //tabla posicion
-
         Task<TablaPosicionesDto> ObtenerTablaPosicionesAsync(Guid pencaId, Guid usuarioId, string rol);
+
+        // Calcular ganadores
+        Task<IEnumerable<PremioResponseDto>> ObtenerGanadoresAsync(Guid pencaId);
+
     }
 }

@@ -19,7 +19,7 @@ namespace TuPenca.Infrastructure.Data
         public IRepository<Partido> Partidos { get; }
         public IPrediccionRepository Predicciones { get; }
         public IPuntajeUsuarioRepository PuntajesUsuario { get; }
-        public IRepository<Premio> Premios { get; }
+        public IPremioRepository Premios { get; }
         public IRepository<Pago> Pagos { get; }
         public IRepository<MensajeChat> MensajesChat { get; }
         public IRepository<Notificacion> Notificaciones { get; }
@@ -29,7 +29,7 @@ namespace TuPenca.Infrastructure.Data
         public IRepository<Equipo> Equipos { get; }
 
         public UnitOfWork(AppDbContext context, IUsuarioRepository usuarios, IAdministradorRepository administradores, IPlantillaPencaRepository plantillaPenca, 
-            IPencaRepository pencas, IPrediccionRepository Prediccion, IPuntajeUsuarioRepository PuntajesUsuarios)
+            IPencaRepository pencas, IPrediccionRepository Prediccion, IPuntajeUsuarioRepository PuntajesUsuarios, IPremioRepository Premio)
         {
             _context = context;
             Usuarios = usuarios;
@@ -39,7 +39,7 @@ namespace TuPenca.Infrastructure.Data
             Partidos = new Repository<Partido>(context);
             Predicciones = Prediccion;
             PuntajesUsuario = PuntajesUsuarios;
-            Premios = new Repository<Premio>(context);
+            Premios = Premio;
             Pagos = new Repository<Pago>(context);
             MensajesChat = new Repository<MensajeChat>(context);
             Notificaciones = new Repository<Notificacion>(context);

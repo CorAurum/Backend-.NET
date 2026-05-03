@@ -15,7 +15,7 @@ namespace TuPenca.Domain.Interfaces
         IRepository<Partido> Partidos { get; }
         IPrediccionRepository Predicciones { get; }
         IPuntajeUsuarioRepository PuntajesUsuario { get; }
-        IRepository<Premio> Premios { get; }
+        IPremioRepository Premios { get; }
         IRepository<Pago> Pagos { get; }
         IRepository<MensajeChat> MensajesChat { get; }
         IRepository<Notificacion> Notificaciones { get; }

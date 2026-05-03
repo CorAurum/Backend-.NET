@@ -82,6 +82,10 @@ namespace TuPenca.Application.Services
             if (penca == null)
                 throw new Exception("Penca no encontrada");
 
+            // Si se está finalizando, calcular ganadores
+            if (nuevoEstado == EstadoPenca.Finalizada)
+                await CerrarPencaAsync(penca);
+
             penca.Estado = nuevoEstado;
             await _unitOfWork.Pencas.UpdateAsync(penca);
             await _unitOfWork.SaveChangesAsync();
@@ -149,6 +153,98 @@ namespace TuPenca.Application.Services
                 NombrePenca = penca.Nombre,
                 Posiciones = agrupados
             };
+        }
+
+
+        private async Task CerrarPencaAsync(Penca penca)
+        {
+            // 1. Obtener tabla de posiciones
+            var puntajes = await _unitOfWork.PuntajesUsuario.GetByPencaAsync(penca.Id);
+
+            var posiciones = puntajes
+                .GroupBy(p => new { p.UsuarioId, p.Usuario.Nombre })
+                .Select(g => new
+                {
+                    UsuarioId = g.Key.UsuarioId,
+                    PuntosTotales = g.Sum(p => p.PuntosPartido)
+                })
+                .OrderByDescending(p => p.PuntosTotales)
+                .ToList();
+
+            if (!posiciones.Any())
+                return;
+
+            // 2. Calcular pozo total
+            var pagos = await _unitOfWork.Pagos.GetAllAsync();
+            var pagosPenca = pagos.Where(p => p.PencaId == penca.Id && p.Estado == EstadoPago.Aprobado).ToList();
+            var pozoTotal = pagosPenca.Sum(p => p.Monto);
+
+            // 3. Obtener porcentajes de la plantilla y penca
+            var plantilla = await _unitOfWork.PlantillasPenca.GetByIdConDetalleAsync(penca.PlantillaPencaId);
+            if (plantilla == null) return;
+
+            // 4. Calcular montos de premios
+            var montoPremio1 = pozoTotal * penca.PorcentajePremio1 / 100;
+            var montoPremio2 = pozoTotal * penca.PorcentajePremio2 / 100;
+            var montoPremio3 = pozoTotal * penca.PorcentajePremio3 / 100;
+
+            // 5. Crear o actualizar premios con ganadores
+            var premiosExistentes = await _unitOfWork.Premios.GetByPencaAsync(penca.Id);
+
+            var datosPremios = new[]
+            {
+        new { Posicion = 1, Monto = montoPremio1, UsuarioId = posiciones.ElementAtOrDefault(0)?.UsuarioId },
+        new { Posicion = 2, Monto = montoPremio2, UsuarioId = posiciones.ElementAtOrDefault(1)?.UsuarioId },
+        new { Posicion = 3, Monto = montoPremio3, UsuarioId = posiciones.ElementAtOrDefault(2)?.UsuarioId }
+    };
+
+            foreach (var dato in datosPremios)
+            {
+                if (dato.UsuarioId == null) continue;
+
+                var premioExistente = premiosExistentes.FirstOrDefault(p => p.Posicion == dato.Posicion);
+                if (premioExistente != null)
+                {
+                    premioExistente.UsuarioGanadorId = dato.UsuarioId;
+                    premioExistente.Monto = dato.Monto;
+                    await _unitOfWork.Premios.UpdateAsync(premioExistente);
+                }
+                else
+                {
+                    var premio = new Premio
+                    {
+                        Id = Guid.NewGuid(),
+                        PencaId = penca.Id,
+                        Posicion = dato.Posicion,
+                        Monto = dato.Monto,
+                        Descripcion = $"{dato.Posicion}er lugar",
+                        UsuarioGanadorId = dato.UsuarioId
+                    };
+                    await _unitOfWork.Premios.AddAsync(premio);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<PremioResponseDto>> ObtenerGanadoresAsync(Guid pencaId)
+        {
+            var penca = await _unitOfWork.Pencas.GetByIdAsync(pencaId);
+            if (penca == null)
+                throw new Exception("Penca no encontrada");
+
+            if (penca.Estado != EstadoPenca.Finalizada)
+                throw new Exception("La penca todavía no finalizó");
+
+            var premios = await _unitOfWork.Premios.GetByPencaAsync(pencaId);
+
+            return premios
+                .Where(p => p.UsuarioGanadorId != null)
+                .Select(p => new PremioResponseDto
+                {
+                    Posicion = p.Posicion,
+                    NombreUsuario = p.UsuarioGanador?.Nombre ?? string.Empty,
+                    Monto = p.Monto,
+                    Descripcion = p.Descripcion
+                });
         }
 
     }
