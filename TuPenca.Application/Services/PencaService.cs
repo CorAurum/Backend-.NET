@@ -58,13 +58,30 @@ namespace TuPenca.Application.Services
             if (plantilla == null)
                 throw new Exception("Plantilla no encontrada");
 
+            // Validación individual
+            if (dto.PorcentajePremio1 < 0 || dto.PorcentajePremio2 < 0 || dto.PorcentajePremio3 < 0)
+                throw new Exception("Los porcentajes de premios no pueden ser negativos");
+
+            var porcentajeDisponible = 100 - plantilla.PorcentajeComision;
+            var sumaPorcentajes = dto.PorcentajePremio1 + dto.PorcentajePremio2 + dto.PorcentajePremio3;
+
+            if (sumaPorcentajes > porcentajeDisponible)
+                throw new Exception($"La suma de los porcentajes ({sumaPorcentajes}%) supera el {porcentajeDisponible}% disponible tras descontar la comisión");
+
+            if (sumaPorcentajes < porcentajeDisponible)
+                throw new Exception($"La suma de los porcentajes ({sumaPorcentajes}%) debe ser exactamente {porcentajeDisponible}% — no puede quedar pozo sin asignar");
+
+
             var penca = new Penca
             {
                 Id = Guid.NewGuid(),
                 Nombre = dto.Nombre,
                 Estado = EstadoPenca.Abierta,
                 PlantillaPencaId = dto.PlantillaPencaId,
-                SitioId = sitioId
+                SitioId = sitioId,
+                PorcentajePremio1 = dto.PorcentajePremio1,
+                PorcentajePremio2 = dto.PorcentajePremio2,
+                PorcentajePremio3 = dto.PorcentajePremio3
             };
 
             await _unitOfWork.Pencas.AddAsync(penca);
@@ -76,7 +93,8 @@ namespace TuPenca.Application.Services
                 Nombre = penca.Nombre,
                 Estado = penca.Estado,
                 PlantillaNombre = plantilla.Nombre,
-                EventoDeportivo = plantilla.Evento?.Nombre ?? string.Empty
+                EventoDeportivo = plantilla.Evento?.Nombre ?? string.Empty,
+                MontoEntrada = plantilla.MontoEntrada  // ❌ faltaba esto
             };
         }
 
@@ -188,9 +206,9 @@ namespace TuPenca.Application.Services
             if (plantilla == null) return;
 
             // 4. Calcular montos de premios
-            var montoPremio1 = pozoTotal * penca.PorcentajePremio1 / 100;
-            var montoPremio2 = pozoTotal * penca.PorcentajePremio2 / 100;
-            var montoPremio3 = pozoTotal * penca.PorcentajePremio3 / 100;
+            var montoPremio1 = (int)(pozoTotal * penca.PorcentajePremio1 / 100m);
+            var montoPremio2 = (int)(pozoTotal * penca.PorcentajePremio2 / 100m);
+            var montoPremio3 = (int)(pozoTotal * penca.PorcentajePremio3 / 100m);
 
             // 5. Crear o actualizar premios con ganadores
             var premiosExistentes = await _unitOfWork.Premios.GetByPencaAsync(penca.Id);

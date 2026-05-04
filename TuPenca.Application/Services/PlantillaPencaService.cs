@@ -64,6 +64,12 @@ namespace TuPenca.Application.Services
             if (dto.Reglas.Any(r => r.Puntaje < 0 || r.Desviacion < 0))
                 throw new Exception("Desviación y puntaje deben ser valores positivos");
 
+            if (dto.PorcentajeComision < 0 || dto.PorcentajeComision > 49)
+                throw new Exception("El porcentaje de comisión debe estar entre 0 y 49");
+
+            if (dto.MontoEntrada <= 0)
+                throw new Exception("El monto de entrada debe ser mayor a 0");
+
             var plantilla = new PlantillaPenca
             {
                 Id = Guid.NewGuid(),

@@ -23,6 +23,8 @@ public class AuthController : ControllerBase
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             return BadRequest("Email y contraseña son requeridos");
 
+        // REVISAR, NO LO VEO MUY BIEN
+
         // Primero intenta como AdministradorPlataforma (sin sitioId)
         var responseAdmin = await _authService.LoginAsync(request, null);
         if (responseAdmin != null && responseAdmin.Rol == "AdministradorPlataforma")
