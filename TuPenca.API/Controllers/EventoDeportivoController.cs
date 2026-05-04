@@ -8,7 +8,7 @@ namespace TuPenca.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "AdministradorPlataforma")]
+    [Authorize]
     public class EventoDeportivoController : ControllerBase
     {
         private readonly IEventoDeportivoService _eventoService;
@@ -26,6 +26,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "AdministradorPlataforma,UsuarioComun,AdministradorSitio")]
         public async Task<IActionResult> ObtenerPorId(Guid id)
         {
             var response = await _eventoService.ObtenerPorIdAsync(id);
@@ -34,6 +35,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpPost("crear")]
+        [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> Crear([FromBody] EventoDeportivoRequestDto dto)
         {
             try
@@ -48,6 +50,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpPost("partido/agregar")]
+        [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> AgregarPartido([FromBody] PartidoRequestDto dto)
         {
             try
@@ -63,6 +66,7 @@ namespace TuPenca.API.Controllers
 
 
         [HttpPost("resultado/cargar")]
+        [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> CargarResultado([FromBody] ResultadoRequestDto dto)
         {
             try

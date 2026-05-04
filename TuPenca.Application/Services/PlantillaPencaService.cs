@@ -71,6 +71,8 @@ namespace TuPenca.Application.Services
                 Descripcion = dto.Descripcion,
                 TiempoLimitePrevioMinutos = dto.TiempoLimitePrevioMinutos,
                 EventoDeportivoId = dto.EventoDeportivoId,
+                MontoEntrada = dto.MontoEntrada,
+                PorcentajeComision = dto.PorcentajeComision,
                 Reglas = dto.Reglas.Select(r => new ReglaPuntuacion
                 {
                     Id = Guid.NewGuid(),

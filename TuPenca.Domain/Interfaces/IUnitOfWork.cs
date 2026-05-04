@@ -23,6 +23,8 @@ namespace TuPenca.Domain.Interfaces
         IPlantillaPencaRepository PlantillasPenca { get; }
         IRepository<EventoDeportivo> EventosDeportivos { get; }
         IRepository<Equipo> Equipos { get; }
+        IRepository<Deporte> Deportes { get; }
+        IRepository<TipoCompetencia> TiposCompetencia { get; }
 
         Task<int> SaveChangesAsync(); // ← confirma todos los cambios pendientes
     }

@@ -29,7 +29,9 @@ namespace TuPenca.Application.Services
                 Nombre = p.Nombre,
                 Estado = p.Estado,
                 PlantillaNombre = p.Plantilla?.Nombre ?? string.Empty,
-                EventoDeportivo = p.Plantilla?.Evento?.Nombre ?? string.Empty
+                EventoDeportivo = p.Plantilla?.Evento?.Nombre ?? string.Empty,
+                EventoDeportivoId = p.Plantilla?.EventoDeportivoId,
+                MontoEntrada = p.Plantilla?.MontoEntrada ?? 0
             });
         }
 
@@ -44,7 +46,9 @@ namespace TuPenca.Application.Services
                 Nombre = penca.Nombre,
                 Estado = penca.Estado,
                 PlantillaNombre = penca.Plantilla?.Nombre ?? string.Empty,
-                EventoDeportivo = penca.Plantilla?.Evento?.Nombre ?? string.Empty
+                EventoDeportivo = penca.Plantilla?.Evento?.Nombre ?? string.Empty,
+                EventoDeportivoId = penca.Plantilla?.EventoDeportivoId,
+                MontoEntrada = penca.Plantilla?.MontoEntrada ?? 0
             };
         }
 

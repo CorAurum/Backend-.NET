@@ -27,6 +27,8 @@ namespace TuPenca.Infrastructure.Data
         public IPlantillaPencaRepository PlantillasPenca { get; }
         public IRepository<EventoDeportivo> EventosDeportivos { get; }
         public IRepository<Equipo> Equipos { get; }
+        public IRepository<Deporte> Deportes { get; }
+        public IRepository<TipoCompetencia> TiposCompetencia { get; }
 
         public UnitOfWork(AppDbContext context, IUsuarioRepository usuarios, IAdministradorRepository administradores, IPlantillaPencaRepository plantillaPenca, 
             IPencaRepository pencas, IPrediccionRepository Prediccion, IPuntajeUsuarioRepository PuntajesUsuarios, IPremioRepository Premio)
@@ -47,6 +49,8 @@ namespace TuPenca.Infrastructure.Data
             PlantillasPenca = plantillaPenca;
             EventosDeportivos = new Repository<EventoDeportivo>(context);
             Equipos = new Repository<Equipo>(context);
+            Deportes = new Repository<Deporte>(context);
+            TiposCompetencia = new Repository<TipoCompetencia>(context);
         }
 
         public async Task<int> SaveChangesAsync()

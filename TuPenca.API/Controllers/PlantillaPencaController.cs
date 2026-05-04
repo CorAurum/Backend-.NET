@@ -7,7 +7,7 @@ namespace TuPenca.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "AdministradorPlataforma")]
+    [Authorize(Roles = "AdministradorPlataforma,AdministradorSitio")]
     public class PlantillaPencaController : ControllerBase
     {
         private readonly IPlantillaPencaService _plantillaService;
@@ -18,6 +18,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "AdministradorPlataforma,AdministradorSitio")]
         public async Task<IActionResult> ObtenerTodas()
         {
             var response = await _plantillaService.ObtenerTodasAsync();
@@ -25,6 +26,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "AdministradorPlataforma,AdministradorSitio")]
         public async Task<IActionResult> ObtenerPorId(Guid id)
         {
             var response = await _plantillaService.ObtenerPorIdAsync(id);
@@ -33,6 +35,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpPost("crear")]
+        [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> Crear([FromBody] PlantillaPencaRequestDto dto)
         {
             try
@@ -47,6 +50,7 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "AdministradorPlataforma")]
         public async Task<IActionResult> Eliminar(Guid id)
         {
             try

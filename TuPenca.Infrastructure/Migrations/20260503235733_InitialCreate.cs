@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TuPenca.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate3 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,7 +62,8 @@ namespace TuPenca.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UrlPropia = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EsquemaColores = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ColorPrimario = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ColorSecundario = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ConfiguracionSitio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TipoRegistro = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -89,34 +90,6 @@ namespace TuPenca.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Invitaciones",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    EmailInvitado = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Codigo = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Aceptada = table.Column<bool>(type: "bit", nullable: false),
-                    SitioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AdministradorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Invitaciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Invitaciones_Administradores_AdministradorId",
-                        column: x => x.AdministradorId,
-                        principalTable: "Administradores",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Invitaciones_Sitios_SitioId",
-                        column: x => x.SitioId,
-                        principalTable: "Sitios",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
                 {
@@ -128,7 +101,6 @@ namespace TuPenca.Infrastructure.Migrations
                     FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProveedorAuth = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TenantId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SitioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -175,26 +147,37 @@ namespace TuPenca.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Pagos",
+                name: "Invitaciones",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Monto = table.Column<int>(type: "int", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailInvitado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Codigo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Aceptada = table.Column<bool>(type: "bit", nullable: false),
+                    SitioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AdministradorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Pagos", x => x.Id);
+                    table.PrimaryKey("PK_Invitaciones", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Pagos_Usuarios_UsuarioId",
+                        name: "FK_Invitaciones_Administradores_AdministradorId",
+                        column: x => x.AdministradorId,
+                        principalTable: "Administradores",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invitaciones_Sitios_SitioId",
+                        column: x => x.SitioId,
+                        principalTable: "Sitios",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Invitaciones_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -242,7 +225,10 @@ namespace TuPenca.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TiempoLimitePrevioMinutos = table.Column<int>(type: "int", nullable: false),
                     EventoDeportivoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MontoEntrada = table.Column<int>(type: "int", nullable: false),
+                    PorcentajeComision = table.Column<int>(type: "int", nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -258,35 +244,6 @@ namespace TuPenca.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Predicciones",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GolesLocal = table.Column<int>(type: "int", nullable: false),
-                    GolesVisitante = table.Column<int>(type: "int", nullable: false),
-                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PartidoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Predicciones", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Predicciones_Partidos_PartidoId",
-                        column: x => x.PartidoId,
-                        principalTable: "Partidos",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Predicciones_Usuarios_UsuarioId",
-                        column: x => x.UsuarioId,
-                        principalTable: "Usuarios",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Pencas",
                 columns: table => new
                 {
@@ -295,6 +252,9 @@ namespace TuPenca.Infrastructure.Migrations
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PlantillaPencaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SitioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PorcentajePremio1 = table.Column<int>(type: "int", nullable: false),
+                    PorcentajePremio2 = table.Column<int>(type: "int", nullable: false),
+                    PorcentajePremio3 = table.Column<int>(type: "int", nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -320,7 +280,7 @@ namespace TuPenca.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TipoAcierto = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Desviacion = table.Column<int>(type: "int", nullable: false),
                     Puntaje = table.Column<int>(type: "int", nullable: false),
                     PlantillaPencaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -394,6 +354,70 @@ namespace TuPenca.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pagos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Monto = table.Column<int>(type: "int", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PencaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pagos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pagos_Pencas_PencaId",
+                        column: x => x.PencaId,
+                        principalTable: "Pencas",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Pagos_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Predicciones",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GolesLocal = table.Column<int>(type: "int", nullable: false),
+                    GolesVisitante = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PartidoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PencaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Predicciones", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Predicciones_Partidos_PartidoId",
+                        column: x => x.PartidoId,
+                        principalTable: "Partidos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Predicciones_Pencas_PencaId",
+                        column: x => x.PencaId,
+                        principalTable: "Pencas",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Predicciones_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Premios",
                 columns: table => new
                 {
@@ -402,6 +426,7 @@ namespace TuPenca.Infrastructure.Migrations
                     Monto = table.Column<int>(type: "int", nullable: false),
                     Posicion = table.Column<int>(type: "int", nullable: false),
                     PencaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UsuarioGanadorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -414,6 +439,11 @@ namespace TuPenca.Infrastructure.Migrations
                         principalTable: "Pencas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Premios_Usuarios_UsuarioGanadorId",
+                        column: x => x.UsuarioGanadorId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -421,15 +451,21 @@ namespace TuPenca.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PuntosTotales = table.Column<int>(type: "int", nullable: false),
+                    PuntosPartido = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PencaId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PartidoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaModificacion = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PuntajesUsuario", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PuntajesUsuario_Partidos_PartidoId",
+                        column: x => x.PartidoId,
+                        principalTable: "Partidos",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_PuntajesUsuario_Pencas_PencaId",
                         column: x => x.PencaId,
@@ -469,6 +505,11 @@ namespace TuPenca.Infrastructure.Migrations
                 column: "SitioId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invitaciones_UsuarioId",
+                table: "Invitaciones",
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MensajesChat_PencaId",
                 table: "MensajesChat",
                 column: "PencaId");
@@ -487,6 +528,11 @@ namespace TuPenca.Infrastructure.Migrations
                 name: "IX_Notificaciones_UsuarioId",
                 table: "Notificaciones",
                 column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pagos_PencaId",
+                table: "Pagos",
+                column: "PencaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pagos_UsuarioId",
@@ -529,6 +575,11 @@ namespace TuPenca.Infrastructure.Migrations
                 column: "PartidoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Predicciones_PencaId",
+                table: "Predicciones",
+                column: "PencaId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Predicciones_UsuarioId",
                 table: "Predicciones",
                 column: "UsuarioId");
@@ -537,6 +588,16 @@ namespace TuPenca.Infrastructure.Migrations
                 name: "IX_Premios_PencaId",
                 table: "Premios",
                 column: "PencaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Premios_UsuarioGanadorId",
+                table: "Premios",
+                column: "UsuarioGanadorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PuntajesUsuario_PartidoId",
+                table: "PuntajesUsuario",
+                column: "PartidoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PuntajesUsuario_PencaId",

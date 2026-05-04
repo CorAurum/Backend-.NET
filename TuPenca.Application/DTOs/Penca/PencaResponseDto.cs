@@ -13,5 +13,7 @@ namespace TuPenca.Application.DTOs.Penca
         public EstadoPenca Estado { get; set; }
         public string PlantillaNombre { get; set; } = null!;
         public string EventoDeportivo { get; set; } = null!;
+        public Guid? EventoDeportivoId { get; set; }
+        public int MontoEntrada { get; set; }
     }
 }

@@ -36,12 +36,34 @@ namespace TuPenca.Application.Services
             var evento = await _unitOfWork.EventosDeportivos.GetByIdAsync(id);
             if (evento == null) return null;
 
+            // Cargar partidos del evento
+            var todosPartidos = await _unitOfWork.Partidos.GetAllAsync();
+            var partidosEvento = todosPartidos.Where(p => p.EventoDeportivoId == id).ToList();
+
+            var partidosDto = new List<PartidoResponseDto>();
+            foreach (var p in partidosEvento)
+            {
+                var eqLocal = await _unitOfWork.Equipos.GetByIdAsync(p.EquipoLocalId);
+                var eqVisitante = await _unitOfWork.Equipos.GetByIdAsync(p.EquipoVisitanteId);
+                partidosDto.Add(new PartidoResponseDto
+                {
+                    Id = p.Id,
+                    Fecha = p.Fecha,
+                    Fase = p.Fase,
+                    EquipoLocal = eqLocal?.Nombre ?? string.Empty,
+                    EquipoVisitante = eqVisitante?.Nombre ?? string.Empty,
+                    ResultadoLocal = p.ResultadoLocal,
+                    ResultadoVisitante = p.ResultadoVisitante
+                });
+            }
+
             return new EventoDeportivoResponseDto
             {
                 Id = evento.Id,
                 Nombre = evento.Nombre,
                 FechaInicio = evento.FechaInicio,
-                FechaFin = evento.FechaFin
+                FechaFin = evento.FechaFin,
+                Partidos = partidosDto
             };
         }
 
