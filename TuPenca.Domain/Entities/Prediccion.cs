@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace TuPenca.Domain.Entities
@@ -18,6 +19,7 @@ namespace TuPenca.Domain.Entities
         public Partido Partido { get; set; } = null!;
 
         public Guid PencaId { get; set; }
+
         public Penca Penca { get; set; } = null!;
     }
 }

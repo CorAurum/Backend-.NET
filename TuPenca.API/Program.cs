@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TuPenca.Application.Interfaces.Services;
 using TuPenca.Application.Services;
-using TuPenca.Domain.Entities;
 using TuPenca.Domain.Interfaces;
 using TuPenca.Domain.Interfaces.Repositories;
 using TuPenca.Infrastructure.Data;
@@ -61,6 +60,8 @@ builder.Services.AddScoped<IEventoDeportivoService, EventoDeportivoService>();
 builder.Services.AddScoped<IPlantillaPencaService, PlantillaPencaService>();
 builder.Services.AddScoped<IPencaService, PencaService>();
 builder.Services.AddScoped<IPrediccionService, PrediccionService>();
+builder.Services.AddScoped<IDeporteService, DeporteService>();
+builder.Services.AddScoped<ITipoCompetenciaService, TipoCompetenciaService>();
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -115,3 +116,5 @@ app.MapControllers();
 // app.MapHub<ResultadosHub>("/hubs/resultados");
 
 app.Run();
+
+public partial class Program { }

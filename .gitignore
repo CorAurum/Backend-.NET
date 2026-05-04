@@ -11,3 +11,4 @@ obj/
 
 # Logs
 *.log
+/TuPenca.Infrastructure/Migrations/20260504013335_InitialCreate6.Designer.cs

@@ -18,6 +18,10 @@ namespace TuPenca.Domain.Entities
         public Guid SitioId { get; set; }
         public Sitio Sitio { get; set; } = null!;
 
+
+        // 1 Penca → N Predicciones
+        public ICollection<Prediccion> Predicciones { get; set; } = new List<Prediccion>();
+
         // 1 Penca → N Premios
         public ICollection<Premio> Premios { get; set; } = new List<Premio>();
 
