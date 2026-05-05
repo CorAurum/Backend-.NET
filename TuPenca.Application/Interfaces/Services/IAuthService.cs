@@ -9,5 +9,10 @@ namespace TuPenca.Application.Interfaces.Services
         Task<RegistroResponseDto> RegistrarAdminAsync(RegistroAdminRequestDto request);
         string HashPassword(string password);
         bool VerifyPassword(string password, string hash);
+
+        Task<IEnumerable<UsuarioPendienteDto>> ObtenerUsuariosPendientesAsync(Guid sitioId);
+        Task<string> AprobarUsuarioAsync(Guid usuarioId);
+        Task<string> RechazarUsuarioAsync(Guid usuarioId);
+
     }
 }

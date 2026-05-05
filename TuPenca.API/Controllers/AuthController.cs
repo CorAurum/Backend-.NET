@@ -68,6 +68,60 @@ public class AuthController : ControllerBase
         }
     }
 
+
+    // INVITACIONES - ENDPOINTS
+
+    [HttpGet("usuarios/pendientes")]
+    [Authorize(Roles = "AdministradorSitio")]
+    public async Task<IActionResult> ObtenerUsuariosPendientes()
+    {
+        try
+        {
+            if (_sitioId == null)
+                return Unauthorized("No se pudo determinar el sitio");
+
+            var response = await _authService.ObtenerUsuariosPendientesAsync(_sitioId.Value);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("usuarios/{usuarioId}/aprobar")]
+    [Authorize(Roles = "AdministradorSitio")]
+    public async Task<IActionResult> AprobarUsuario(Guid usuarioId)
+    {
+        try
+        {
+            var response = await _authService.AprobarUsuarioAsync(usuarioId);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("usuarios/{usuarioId}/rechazar")]
+    [Authorize(Roles = "AdministradorSitio")]
+    public async Task<IActionResult> RechazarUsuario(Guid usuarioId)
+    {
+        try
+        {
+            var response = await _authService.RechazarUsuarioAsync(usuarioId);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    //////////////////////////////////////
+
     // ⚠️ TEMPORAL — eliminar después de crear el primer admin
     [HttpPost("setup/primer-admin")]
     public async Task<IActionResult> CrearPrimerAdmin([FromBody] RegistroAdminRequestDto request)

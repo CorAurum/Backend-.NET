@@ -32,6 +32,13 @@ public class AuthService : IAuthService
 
             if (resultado == PasswordVerificationResult.Failed)
                 return null;
+            
+            // VERIFICACION DE ESTADO DE USUARIO, SI ES PENDIENTE O RECHAZADO NO SE LOGUEA.
+            if (usuario.Estado == EstadoUsuario.Pendiente)
+                throw new Exception("Tu cuenta está pendiente de aprobación por un administrador");
+
+            if (usuario.Estado == EstadoUsuario.Rechazado)
+                throw new Exception("Tu cuenta fue rechazada");
 
             // El rol viene del campo Rol de la entidad
             var rolClaim = usuario.Rol == RolUsuario.AdministradorSitio
@@ -176,6 +183,57 @@ public class AuthService : IAuthService
             Mensaje = "Administrador de plataforma registrado exitosamente"
         };
     }
+
+
+    /// INVITACIONES - SERVICES
+
+    public async Task<IEnumerable<UsuarioPendienteDto>> ObtenerUsuariosPendientesAsync(Guid sitioId)
+    {
+        var usuarios = await _unitOfWork.Usuarios.GetAllAsync();
+        return usuarios
+            .Where(u => u.SitioId == sitioId && u.Estado == EstadoUsuario.Pendiente)
+            .Select(u => new UsuarioPendienteDto
+            {
+                Id = u.Id,
+                Nombre = u.Nombre,
+                Email = u.Email,
+                FechaRegistro = u.FechaRegistro
+            });
+    }
+
+    public async Task<string> AprobarUsuarioAsync(Guid usuarioId)
+    {
+        var usuario = await _unitOfWork.Usuarios.GetByIdAsync(usuarioId);
+        if (usuario == null)
+            throw new Exception("Usuario no encontrado");
+
+        if (usuario.Estado != EstadoUsuario.Pendiente)
+            throw new Exception("El usuario no está pendiente de aprobación");
+
+        usuario.Estado = EstadoUsuario.Aprobado;
+        await _unitOfWork.Usuarios.UpdateAsync(usuario);
+        await _unitOfWork.SaveChangesAsync();
+
+        return "Usuario aprobado exitosamente";
+    }
+
+    public async Task<string> RechazarUsuarioAsync(Guid usuarioId)
+    {
+        var usuario = await _unitOfWork.Usuarios.GetByIdAsync(usuarioId);
+        if (usuario == null)
+            throw new Exception("Usuario no encontrado");
+
+        if (usuario.Estado != EstadoUsuario.Pendiente)
+            throw new Exception("El usuario no está pendiente de aprobación");
+
+        usuario.Estado = EstadoUsuario.Rechazado;
+        await _unitOfWork.Usuarios.UpdateAsync(usuario);
+        await _unitOfWork.SaveChangesAsync();
+
+        return "Usuario rechazado";
+    }
+
+    /// ////////////////////////////////////////////////////
 
     public string HashPassword(string password)
         => _hasher.HashPassword(null!, password);

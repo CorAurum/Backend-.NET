@@ -62,6 +62,7 @@ builder.Services.AddScoped<IPlantillaPencaService, PlantillaPencaService>();
 builder.Services.AddScoped<IPencaService, PencaService>();
 builder.Services.AddScoped<IPrediccionService, PrediccionService>();
 builder.Services.AddScoped<IEstadisticasService, EstadisticasService>();
+builder.Services.AddScoped<IInvitacionService, InvitacionService>();
 
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
