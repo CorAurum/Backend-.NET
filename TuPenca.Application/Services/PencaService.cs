@@ -269,5 +269,52 @@ namespace TuPenca.Application.Services
                 });
         }
 
+
+        // EDITAR VALOR % DE PREMIOS EN LA PENCA PARA CADA GANADOR
+
+
+        public async Task<PencaEditPremioDto> EditarPremiosAsync(Guid PencaId, PencaEditPremioDto dto)
+        {
+
+            var penca = await _unitOfWork.Pencas.GetByIdAsync(PencaId);
+            if (penca == null)
+                throw new Exception("Penca no encontrada");
+
+
+            var plantilla = await _unitOfWork.PlantillasPenca.GetByIdConDetalleAsync(penca.PlantillaPencaId);
+            if (plantilla == null)
+                throw new Exception("Plantilla no encontrada");
+
+
+            // Validación individual
+            if (dto.PorcentajePremio1 < 0 || dto.PorcentajePremio2 < 0 || dto.PorcentajePremio3 < 0)
+                throw new Exception("Los porcentajes de premios no pueden ser negativos");
+
+            var porcentajeDisponible = 100 - plantilla.PorcentajeComision;
+            var sumaPorcentajes = dto.PorcentajePremio1 + dto.PorcentajePremio2 + dto.PorcentajePremio3;
+
+            if (sumaPorcentajes > porcentajeDisponible)
+                throw new Exception($"La suma de los porcentajes ({sumaPorcentajes}%) supera el {porcentajeDisponible}% disponible tras descontar la comisión");
+
+            if (sumaPorcentajes < porcentajeDisponible)
+                throw new Exception($"La suma de los porcentajes ({sumaPorcentajes}%) debe ser exactamente {porcentajeDisponible}% — no puede quedar pozo sin asignar");
+
+
+                penca.PorcentajePremio1 = dto.PorcentajePremio1;
+                penca.PorcentajePremio2 = dto.PorcentajePremio2;
+                penca.PorcentajePremio3 = dto.PorcentajePremio3;
+       
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new PencaEditPremioDto
+            {
+                PorcentajePremio1 = penca.PorcentajePremio1,
+                PorcentajePremio2 = penca.PorcentajePremio2,
+                PorcentajePremio3 = penca.PorcentajePremio3
+
+            };
+        }
+
     }
 }

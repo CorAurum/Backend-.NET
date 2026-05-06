@@ -122,5 +122,23 @@ namespace TuPenca.API.Controllers
             }
         }
 
+
+        // ACTUALIZAR % PREMIOS DE GANADORES
+
+        [HttpPut("{id}/premios")]
+        [Authorize(Roles = "AdministradorSitio")]
+        public async Task<IActionResult> EditarPremios(Guid id, [FromBody] PencaEditPremioDto dto)
+        {
+            try
+            { 
+                var response = await _pencaService.EditarPremiosAsync(id,dto);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
