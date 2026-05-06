@@ -20,5 +20,8 @@ namespace TuPenca.Application.Interfaces.Services
         // Calcular ganadores
         Task<IEnumerable<PremioResponseDto>> ObtenerGanadoresAsync(Guid pencaId);
 
+        // Editar % de premios de ganadores
+        Task<PencaEditPremioDto> EditarPremiosAsync(Guid PencaId,PencaEditPremioDto dto);
+
     }
 }
