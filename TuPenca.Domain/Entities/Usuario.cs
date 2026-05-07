@@ -15,7 +15,8 @@ namespace TuPenca.Domain.Entities
         public DateTime FechaRegistro { get; set; } = DateTime.UtcNow;
         public EstadoUsuario Estado { get; set; } = EstadoUsuario.Pendiente;
         public ProveedorAuth ProveedorAuth { get; set; } = ProveedorAuth.Local;
-        
+        public byte[]? Foto { get; set; } = null;
+
         // N Usuarios → 1 Sitio
         public Guid SitioId { get; set; }
         public Sitio Sitio { get; set; } = null!;

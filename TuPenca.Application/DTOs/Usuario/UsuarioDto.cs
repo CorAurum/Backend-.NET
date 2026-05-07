@@ -11,5 +11,6 @@ namespace TuPenca.Application.DTOs.Usuario
         public DateTime FechaRegistro { get; set; }
         public EstadoUsuario Estado { get; set; }
         public Guid SitioId { get; set; }
+        public byte[]? Foto { get; set; } = null;
     }
 }

@@ -5,6 +5,9 @@ namespace TuPenca.Application.Interfaces.Services
     public interface IUsuarioService
     {
         Task<IEnumerable<UsuarioDto>> ObtenerUsuariosAsync();
+        Task<UsuarioDto?> ObtenerUsuarioAsync(Guid id);
         Task<UsuarioResponseDto> ActualizarEstadoAsync(UsuarioActualizarEstadoRequestDto usuarioDto);
+        Task<UsuarioResponseDto> ActualizarUsuarioAsync(UsuarioRequestDto usuarioDto);
+        Task<UsuarioResponseDto> ActualizarPasswordAsync(UsuarioActualizarPasswordRequestDto usuarioDto);
     }
 }
