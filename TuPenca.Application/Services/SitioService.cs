@@ -82,7 +82,8 @@ namespace TuPenca.Application.Services
                 ConfiguracionSitio = sitioDto.ConfiguracionSitio,
                 ColorPrimario = sitioDto.ColorPrimario,
                 ColorSecundario = sitioDto.ColorSecundario,
-                TipoRegistro = sitioDto.TipoRegistro
+                TipoRegistro = sitioDto.TipoRegistro,
+                Logo = sitioDto.Logo
             };
 
             await _unitOfWork.Sitios.AddAsync(sitio);
@@ -128,7 +129,8 @@ namespace TuPenca.Application.Services
                 ColorPrimario = sitioDto.ColorPrimario,
                 ColorSecundario = sitioDto.ColorSecundario,
                 TipoRegistro = sitioDto.TipoRegistro,
-                Estado = sitioDto.Estado
+                Estado = sitioDto.Estado,
+                Logo = sitioDto.Logo
             };
 
             await _unitOfWork.Sitios.AddAsync(sitio);
@@ -155,6 +157,7 @@ namespace TuPenca.Application.Services
             sitio.ColorSecundario = sitioDto.ColorSecundario;
             sitio.TipoRegistro = sitioDto.TipoRegistro;
             sitio.Estado = sitio.Estado;
+            sitio.Logo = sitio.Logo;
 
             await _unitOfWork.Sitios.UpdateAsync(sitio);
             await _unitOfWork.SaveChangesAsync();

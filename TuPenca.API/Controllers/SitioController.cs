@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PasswordGenerator;
+using System.Security.Claims;
 using TuPenca.Application.DTOs.Auth;
 using TuPenca.Application.DTOs.Sitio;
 using TuPenca.Application.DTOs.Usuario;
 using TuPenca.Application.Interfaces.Services;
+using TuPenca.Domain.Entities;
 using TuPenca.Infrastructure.Interfaces.Providers;
 
 namespace TuPenca.API.Controllers
@@ -106,7 +108,7 @@ namespace TuPenca.API.Controllers
 
         [HttpPost("actualizar/estado")]
         [Authorize(Roles = "AdministradorPlataforma")]
-        public async Task<IActionResult> ActualizarSitioPendienteAsync([FromBody] SitioActualizarEstadoRequest sitioDto)
+        public async Task<IActionResult> ActualizarEstadoSitioAsync([FromBody] SitioActualizarEstadoRequest sitioDto)
         {
             try
             {
@@ -150,11 +152,20 @@ namespace TuPenca.API.Controllers
         }
 
         [HttpPut("actualizar")]
-        [Authorize(Roles = "AdministradorPlataforma")]
+        [Authorize(Roles = "AdministradorPlataforma, AdministradorSitio")]
         public async Task<IActionResult> ActualizarSitioAsync([FromBody] SitioRequestDto sitioDto)
         {
             try
             {
+                var rol = User.FindFirst(ClaimTypes.Role)!.Value;
+
+                if (rol == "AdministradorSitio")
+                {
+                    var sitioIdClaim = User.FindFirst("sitioId")?.Value;
+                    if (sitioIdClaim == null || Guid.Parse(sitioIdClaim) != sitioDto.Id)
+                        return Forbid();
+                }
+
                 var response = await _sitioService.ActualizarSitioAsync(sitioDto);
                 return Ok(response);
             }

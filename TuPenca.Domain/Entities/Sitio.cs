@@ -10,6 +10,7 @@ namespace TuPenca.Domain.Entities
         public string ColorSecundario { get; set; } = null!;
         public string? ConfiguracionSitio { get; set; } // JSON con config extra
         public EstadoSitio Estado { get; set; } = EstadoSitio.Pendiente;
+        public byte[]? Logo { get; set; } = null;
 
         public TipoRegistro TipoRegistro { get; set; } = TipoRegistro.Abierta;
 

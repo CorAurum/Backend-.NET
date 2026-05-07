@@ -12,5 +12,6 @@ namespace TuPenca.Application.DTOs.Sitio
         public string ColorSecundario { get; set; } = null!;
         public string? ConfiguracionSitio { get; set; } // JSON con config extra
         public TipoRegistro TipoRegistro { get; set; } = TipoRegistro.Con_Autorizacion;
+        public byte[]? Logo { get; set; } = null;
     }
 }

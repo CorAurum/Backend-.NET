@@ -12,5 +12,6 @@ namespace TuPenca.Application.DTOs.Sitio
         public string? ConfiguracionSitio { get; set; } = null!;
         public TipoRegistro TipoRegistro { get; set; } = TipoRegistro.Abierta;
         public EstadoSitio Estado { get; set; } = EstadoSitio.Pendiente;
+        public byte[]? Logo { get; set; } = null;
     }
 }
