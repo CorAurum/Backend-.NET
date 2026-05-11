@@ -27,6 +27,10 @@ namespace TuPenca.Domain.Entities
         [InverseProperty("PartidosComoVisitante")]
         public Equipo EquipoVisitante { get; set; } = null!;
 
+        // Equipo ganador para ver resultado preciso en caso fuera a penales o algo
+        public Guid? EquipoGanadorId { get; set; }
+        public Equipo? EquipoGanador { get; set; }
+
         // 1 Partido → N Predicciones
         public ICollection<Prediccion> Predicciones { get; set; } = new List<Prediccion>();
     }

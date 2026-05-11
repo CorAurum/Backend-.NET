@@ -24,10 +24,11 @@ namespace TuPenca.Application.Services
                 Descripcion = p.Descripcion,
                 TiempoLimitePrevioMinutos = p.TiempoLimitePrevioMinutos,
                 EventoDeportivo = p.Evento?.Nombre ?? string.Empty,
+                PuntajeGanador = p.PuntajeGanador,
                 Reglas = p.Reglas.Select(r => new ReglaPuntuacionDto
                 {
                     Desviacion = r.Desviacion,
-                    Puntaje = r.Puntaje
+                    Puntaje = r.Puntaje,
                 }).ToList()
             });
         }
@@ -79,6 +80,7 @@ namespace TuPenca.Application.Services
                 EventoDeportivoId = dto.EventoDeportivoId,
                 MontoEntrada = dto.MontoEntrada,
                 PorcentajeComision = dto.PorcentajeComision,
+                PuntajeGanador = dto.PuntajeGanador,
                 Reglas = dto.Reglas.Select(r => new ReglaPuntuacion
                 {
                     Id = Guid.NewGuid(),

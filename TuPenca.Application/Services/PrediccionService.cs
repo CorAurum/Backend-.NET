@@ -53,14 +53,15 @@ namespace TuPenca.Application.Services
 
             if (prediccionExistente != null)
             {
-                prediccionId = prediccionExistente.Id; // ← guardamos el Id existente
+                prediccionId = prediccionExistente.Id;
                 prediccionExistente.GolesLocal = dto.GolesLocal;
                 prediccionExistente.GolesVisitante = dto.GolesVisitante;
+                prediccionExistente.EquipoGanadorPredichoId = dto.EquipoGanadorPredichoId; // ← nuevo
                 await _unitOfWork.Predicciones.UpdateAsync(prediccionExistente);
             }
             else
             {
-                prediccionId = Guid.NewGuid(); // ← generamos el Id nuevo
+                prediccionId = Guid.NewGuid();
                 var prediccion = new Prediccion
                 {
                     Id = prediccionId,
@@ -68,7 +69,8 @@ namespace TuPenca.Application.Services
                     PartidoId = dto.PartidoId,
                     PencaId = dto.PencaId,
                     GolesLocal = dto.GolesLocal,
-                    GolesVisitante = dto.GolesVisitante
+                    GolesVisitante = dto.GolesVisitante,
+                    EquipoGanadorPredichoId = dto.EquipoGanadorPredichoId // ← nuevo
                 };
                 await _unitOfWork.Predicciones.AddAsync(prediccion);
             }

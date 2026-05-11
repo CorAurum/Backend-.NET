@@ -161,6 +161,15 @@ namespace TuPenca.Application.Services
                 var regla = reglas.FirstOrDefault(r => r.Desviacion == desviacion);
                 var puntos = regla?.Puntaje ?? 0;
 
+
+                // 5.5 agregar puntos por elegir el ganador correcto si corresponde
+                if (dto.EquipoGanadorId.HasValue &&
+     prediccion.EquipoGanadorPredichoId.HasValue &&
+     prediccion.EquipoGanadorPredichoId == dto.EquipoGanadorId)
+                {
+                    puntos += prediccion.Penca.Plantilla.PuntajeGanador;
+                }
+
                 // 6. Buscar si ya existe un PuntajeUsuario para este usuario/penca/partido
                 var puntajeExistente = await _unitOfWork.PuntajesUsuario
                     .GetByUsuarioPencaPartidoAsync(prediccion.UsuarioId, prediccion.PencaId, dto.PartidoId);

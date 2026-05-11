@@ -17,6 +17,9 @@ namespace TuPenca.Domain.Entities
         public Guid PartidoId { get; set; }
         public Partido Partido { get; set; } = null!;
 
+        public Guid? EquipoGanadorPredichoId { get; set; }
+        public Equipo? EquipoGanadorPredicho { get; set; }
+
         public Guid PencaId { get; set; }
         public Penca Penca { get; set; } = null!;
     }

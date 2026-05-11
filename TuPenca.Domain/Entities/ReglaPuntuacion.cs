@@ -8,7 +8,7 @@ namespace TuPenca.Domain.Entities
     {
         // 0 = exacto, 1 = te desviaste 1 gol en total, etc.
         public int Desviacion { get; set; }
-        public int Puntaje { get; set; }
+        public int Puntaje { get; set; } 
 
         // N Reglas → 1 PlantillaPenca
         public Guid PlantillaPencaId { get; set; }
