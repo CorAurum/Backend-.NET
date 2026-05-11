@@ -28,7 +28,8 @@ namespace TuPenca.Application.Services
                     ConfiguracionSitio = sitio.ConfiguracionSitio,
                     ColorPrimario = sitio.ColorPrimario,
                     ColorSecundario = sitio.ColorSecundario,
-                    TipoRegistro = sitio.TipoRegistro
+                    TipoRegistro = sitio.TipoRegistro,
+                    Estado = sitio.Estado
                 });
             }
             return result;

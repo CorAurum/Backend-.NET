@@ -1,0 +1,155 @@
+@page "/eventos"
+@using TuPenca.Application.Interfaces.Services
+@using TuPenca.Application.DTOs.EventoDeportivo
+@using TuPenca.Domain.Entities
+@using TuPenca.Domain.Interfaces
+@inject IEventoDeportivoService EventoService
+@inject IUnitOfWork UnitOfWork
+@rendermode InteractiveServer
+
+<h1>Eventos Deportivos</h1>
+
+<button class="btn btn-primary" @onclick="() => mostrarForm = !mostrarForm">
+    @(mostrarForm ? "Cancelar" : "+ Nuevo evento")
+</button>
+
+@if (mostrarForm)
+{
+    <div class="form-card">
+        <div class="form-group">
+            <label>Nombre</label>
+            <input @bind="form.Nombre" />
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Fecha inicio</label>
+                <input type="datetime-local" @bind="form.FechaInicio" />
+            </div>
+            <div class="form-group">
+                <label>Fecha fin</label>
+                <input type="datetime-local" @bind="form.FechaFin" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Deporte</label>
+            <select @bind="form.DeporteId">
+                <option value="@Guid.Empty">Seleccionar...</option>
+                @foreach (var d in deportes)
+                {
+                    <option value="@d.Id">@d.Nombre</option>
+                }
+            </select>
+            <div style="display:flex;gap:.5rem;margin-top:.35rem;">
+                <input @bind="nuevoDeporte" placeholder="Nuevo deporte..." style="flex:1;" />
+                <button type="button" class="btn" style="background:var(--border);" @onclick="CrearDeporte">+ Crear</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Tipo de competencia</label>
+            <select @bind="form.TipoCompetenciaId">
+                <option value="@Guid.Empty">Seleccionar...</option>
+                @foreach (var t in tiposComp)
+                {
+                    <option value="@t.Id">@t.Nombre</option>
+                }
+            </select>
+            <div style="display:flex;gap:.5rem;margin-top:.35rem;">
+                <input @bind="nuevoTipo" placeholder="Nuevo tipo..." style="flex:1;" />
+                <button type="button" class="btn" style="background:var(--border);" @onclick="CrearTipo">+ Crear</button>
+            </div>
+        </div>
+        @if (formError != null) { <p class="error">@formError</p> }
+        <button class="btn btn-primary" @onclick="Crear" disabled="@saving">
+            @(saving ? "Creando..." : "Crear evento")
+        </button>
+    </div>
+}
+
+@if (loading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr><th>Nombre</th><th>Inicio</th><th>Fin</th><th>Acciones</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var ev in eventos)
+            {
+                <tr>
+                    <td>@ev.Nombre</td>
+                    <td>@ev.FechaInicio.ToShortDateString()</td>
+                    <td>@ev.FechaFin.ToShortDateString()</td>
+                    <td>
+                        <a href="/eventos/@ev.Id/resultados" class="btn btn-primary">Resultados</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (eventos.Count == 0)
+    {
+        <p class="empty">No hay eventos registrados.</p>
+    }
+}
+
+@code {
+    private List<EventoDeportivoResponseDto> eventos = new();
+    private List<Deporte> deportes = new();
+    private List<TipoCompetencia> tiposComp = new();
+    private bool loading = true;
+    private bool saving = false;
+    private bool mostrarForm = false;
+    private string? formError;
+    private string nuevoDeporte = "";
+    private string nuevoTipo = "";
+    private EventoDeportivoRequestDto form = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await EventoService.ObtenerTodosAsync();
+        eventos = result.ToList();
+        deportes = (await UnitOfWork.Deportes.GetAllAsync()).ToList();
+        tiposComp = (await UnitOfWork.TiposCompetencia.GetAllAsync()).ToList();
+        loading = false;
+    }
+
+    private async Task Crear()
+    {
+        saving = true; formError = null;
+        try
+        {
+            var nuevo = await EventoService.CrearAsync(form);
+            eventos.Add(nuevo);
+            form = new();
+            mostrarForm = false;
+        }
+        catch (Exception ex) { formError = ex.Message; }
+        finally { saving = false; }
+    }
+
+    private async Task CrearDeporte()
+    {
+        if (string.IsNullOrWhiteSpace(nuevoDeporte)) return;
+        var deporte = new Deporte { Id = Guid.NewGuid(), Nombre = nuevoDeporte.Trim() };
+        await UnitOfWork.Deportes.AddAsync(deporte);
+        await UnitOfWork.SaveChangesAsync();
+        deportes.Add(deporte);
+        form.DeporteId = deporte.Id;
+        nuevoDeporte = "";
+    }
+
+    private async Task CrearTipo()
+    {
+        if (string.IsNullOrWhiteSpace(nuevoTipo)) return;
+        var tipo = new TipoCompetencia { Id = Guid.NewGuid(), Nombre = nuevoTipo.Trim() };
+        await UnitOfWork.TiposCompetencia.AddAsync(tipo);
+        await UnitOfWork.SaveChangesAsync();
+        tiposComp.Add(tipo);
+        form.TipoCompetenciaId = tipo.Id;
+        nuevoTipo = "";
+    }
+}

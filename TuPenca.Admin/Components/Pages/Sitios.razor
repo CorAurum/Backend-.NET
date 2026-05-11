@@ -1,0 +1,112 @@
+@page "/sitios"
+@using TuPenca.Application.Interfaces.Services
+@using TuPenca.Application.DTOs.Sitio
+@using TuPenca.Domain.Enums
+@inject ISitioService SitioService
+@rendermode InteractiveServer
+
+<h1>Gestión de Sitios</h1>
+
+@if (loading)
+{
+    <p>Cargando...</p>
+}
+else if (error != null)
+{
+    <p class="error">@error</p>
+    <button class="btn" @onclick="Cargar">Reintentar</button>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>URL</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sitio in sitios)
+            {
+                <tr>
+                    <td>@sitio.Nombre</td>
+                    <td>@sitio.UrlPropia</td>
+                    <td>@sitio.Estado</td>
+                    <td>
+                        @if (sitio.Estado == TuPenca.Domain.Enums.EstadoSitio.Pendiente)
+                        {
+                            <button class="btn btn-primary" @onclick="() => Aprobar(sitio.Id)">Aprobar</button>
+                            <button class="btn" style="background:#64748b;color:#fff;margin-left:.5rem;" @onclick="() => Rechazar(sitio.Id)">Rechazar</button>
+                        }
+                        <button class="btn btn-danger" style="margin-left:.5rem;" @onclick="() => Eliminar(sitio.Id)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (sitios.Count == 0)
+    {
+        <p class="empty">No hay sitios registrados.</p>
+    }
+}
+
+@code {
+    private List<SitioDto> sitios = new();
+    private bool loading = true;
+    private string? error;
+
+    protected override async Task OnInitializedAsync() => await Cargar();
+
+    private async Task Cargar()
+    {
+        loading = true; error = null;
+        try
+        {
+            var result = await SitioService.ObtenerSitiosAsync();
+            sitios = result.ToList();
+        }
+        catch (Exception ex) { error = ex.Message; }
+        finally { loading = false; }
+    }
+
+    private async Task Eliminar(Guid id)
+    {
+        try
+        {
+            await SitioService.EliminarSitioAsync(id);
+            sitios.RemoveAll(s => s.Id == id);
+        }
+        catch (Exception ex) { error = ex.Message; }
+    }
+
+    private async Task Aprobar(Guid id)
+    {
+        try
+        {
+            await SitioService.ActualizarSitioPendienteAsync(new SitioActualizarEstadoRequest 
+            { 
+                Id = id, 
+                Estado = TuPenca.Domain.Enums.EstadoSitio.Activo 
+            });
+            await Cargar();
+        }
+        catch (Exception ex) { error = ex.Message; }
+    }
+
+    private async Task Rechazar(Guid id)
+    {
+        try
+        {
+            await SitioService.ActualizarSitioPendienteAsync(new SitioActualizarEstadoRequest 
+            { 
+                Id = id, 
+                Estado = TuPenca.Domain.Enums.EstadoSitio.Inactivo 
+            });
+            await Cargar();
+        }
+        catch (Exception ex) { error = ex.Message; }
+    }
+}

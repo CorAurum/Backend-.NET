@@ -1,0 +1,82 @@
+@page "/equipos"
+@using TuPenca.Application.Interfaces.Services
+@using TuPenca.Application.DTOs.Equipo
+@inject IEquipoService EquipoService
+@rendermode InteractiveServer
+
+<h1>Gestión de Equipos</h1>
+
+<div class="form-inline">
+    <textarea @bind="nombresTexto" rows="3" placeholder="Un equipo por línea..."></textarea>
+    <button class="btn btn-primary" @onclick="Crear" disabled="@saving">
+        @(saving ? "Creando..." : "+ Agregar equipos")
+    </button>
+</div>
+
+@if (formError != null)
+{
+    <p class="error">@formError</p>
+}
+
+@if (loading)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr><th>#</th><th>Nombre</th></tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < equipos.Count; i++)
+            {
+                var eq = equipos[i];
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@eq.Nombre</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (equipos.Count == 0)
+    {
+        <p class="empty">No hay equipos registrados.</p>
+    }
+}
+
+@code {
+    private List<EquipoResponseDto> equipos = new();
+    private bool loading = true;
+    private bool saving = false;
+    private string nombresTexto = "";
+    private string? formError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await EquipoService.ObtenerTodosAsync();
+        equipos = result.ToList();
+        loading = false;
+    }
+
+    private async Task Crear()
+    {
+        var nombres = nombresTexto.Split('\n')
+            .Select(n => n.Trim())
+            .Where(n => !string.IsNullOrEmpty(n))
+            .ToList();
+
+        if (nombres.Count == 0) { formError = "Ingresá al menos un nombre"; return; }
+
+        saving = true; formError = null;
+        try
+        {
+            var nuevos = await EquipoService.CrearVariosAsync(new EquipoRequestDto { Nombres = nombres });
+            equipos.AddRange(nuevos);
+            nombresTexto = "";
+        }
+        catch (Exception ex) { formError = ex.Message; }
+        finally { saving = false; }
+    }
+}

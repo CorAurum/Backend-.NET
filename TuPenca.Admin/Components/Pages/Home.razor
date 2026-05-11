@@ -1,0 +1,66 @@
+﻿@page "/"
+@using TuPenca.Application.Interfaces.Services
+@inject IEstadisticasService EstadisticasService
+@rendermode InteractiveServer
+
+<h1>Estadísticas globales</h1>
+
+@if (loading)
+{
+    <p>Cargando...</p>
+}
+else if (error != null)
+{
+    <p class="error">@error</p>
+}
+else if (stats != null)
+{
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <span class="kpi-label">Sitios</span>
+            <span class="kpi-value">@stats.TotalSitios</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Usuarios</span>
+            <span class="kpi-value">@stats.TotalUsuarios</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Pencas activas</span>
+            <span class="kpi-value">@stats.TotalPencasActivas</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Pencas finalizadas</span>
+            <span class="kpi-value">@stats.TotalPencasFinalizadas</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Recaudado</span>
+            <span class="kpi-value">$@stats.TotalRecaudado</span>
+        </div>
+        <div class="kpi-card">
+            <span class="kpi-label">Comisiones</span>
+            <span class="kpi-value">$@stats.TotalComisionesGeneradas</span>
+        </div>
+    </div>
+}
+
+@code {
+    private TuPenca.Application.DTOs.Estadisticas.EstadisticasGlobalesDto? stats;
+    private bool loading = true;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            stats = await EstadisticasService.ObtenerGlobalesAsync();
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+}
