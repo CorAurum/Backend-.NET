@@ -28,7 +28,7 @@ namespace TuPenca.Application.Services
                 Reglas = p.Reglas.Select(r => new ReglaPuntuacionDto
                 {
                     Desviacion = r.Desviacion,
-                    Puntaje = r.Puntaje,
+                    Puntaje = r.Puntaje
                 }).ToList()
             });
         }
