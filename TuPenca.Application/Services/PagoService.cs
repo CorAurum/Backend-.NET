@@ -1,10 +1,6 @@
 ﻿using MercadoPago.Client.Payment;
 using MercadoPago.Client.Preference;
 using MercadoPago.Resource.Preference;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.Xml;
-using System.Text;
 using TuPenca.Application.DTOs.Pago;
 using TuPenca.Application.Interfaces.Services;
 using TuPenca.Domain.Entities;
