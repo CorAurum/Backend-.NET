@@ -36,5 +36,25 @@ namespace TuPenca.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("iniciar")]
+        [Authorize]
+        public async Task<IActionResult> IniciarPago([FromBody] PagoRequestDto dto)
+        {
+            var usuarioId = Guid.Parse(User.FindFirst("sub")!.Value);
+            var initPoint = await _pagoService.IniciarPagoAsync(dto.PencaId, usuarioId);
+            return Ok(new { initPoint });
+        }
+
+        [HttpPost("webhook")]
+        [AllowAnonymous] // ← MercadoPago no manda token
+        public async Task<IActionResult> Webhook([FromQuery] long id, [FromQuery] string topic)
+        {
+            if (topic == "payment")
+                await _pagoService.ProcesarWebhookAsync(id);
+
+            return Ok(); // ← siempre devolver 200 o MP reintenta
+        }
+
     }
 }

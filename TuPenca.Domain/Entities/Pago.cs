@@ -18,5 +18,9 @@ namespace TuPenca.Domain.Entities
 
         public Guid PencaId { get; set; }
         public Penca Penca { get; set; } = null!;
+
+        // MERCADOPAGO
+
+        public string? MercadoPagoPreferenceId { get; set; }
     }
 }

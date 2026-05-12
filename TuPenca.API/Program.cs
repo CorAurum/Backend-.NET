@@ -12,6 +12,7 @@ using TuPenca.Infrastructure.Data.Repositories;
 using TuPenca.Infrastructure.Interfaces.Providers;
 using TuPenca.Infrastructure.Middleware;
 using TuPenca.Infrastructure.Providers;
+using MercadoPago.Config;
 // using TuPenca.Infrastructure.Data;
 // revisar si es necesario
 
@@ -37,6 +38,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
+
+
+//  ─── MercadoPago Token ────────────────────────────────────────
+
+MercadoPagoConfig.AccessToken = builder.Configuration["MercadoPago:AccessToken"];
 
 // ─── Multi-tenancy ────────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
@@ -115,5 +121,13 @@ app.MapControllers();
 
 // ─── SignalR Hubs ─────────────────────────────────────────────
 // app.MapHub<ResultadosHub>("/hubs/resultados");
+
+
+// Necesario para las migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
