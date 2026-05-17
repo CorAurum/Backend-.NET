@@ -1,3 +1,5 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -64,8 +66,9 @@ builder.Services.AddScoped<IPrediccionService, PrediccionService>();
 builder.Services.AddScoped<IEstadisticasService, EstadisticasService>();
 builder.Services.AddScoped<IInvitacionService, InvitacionService>();
 
-
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 
 // ─── AutoMapper ───────────────────────────────────────────────
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies()); 
@@ -93,6 +96,14 @@ builder.Services.AddCors(options =>
 // Acá vas a ir registrando tus servicios a medida que los creés
 // Ejemplo:
 // builder.Services.AddScoped<IPencaService, PencaService>();
+
+
+var firebasePath = Path.Combine(Directory.GetCurrentDirectory(), "tupencauy-key.json");
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(firebasePath)
+});
 
 var app = builder.Build();
 

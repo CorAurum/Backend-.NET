@@ -5,6 +5,8 @@ namespace TuPenca.Application.Interfaces.Services
     public interface IAuthService
     {
         Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, Guid? sitioId);
+        Task<LoginResponseDto> LoginFirebaseAsync(string idToken, Guid? sitioId);
+
         Task<RegistroResponseDto> RegistrarUsuarioAsync(RegistroUsuarioRequestDto request, Guid? sitioId);
         Task<RegistroResponseDto> RegistrarAdminAsync(RegistroAdminRequestDto request);
         string HashPassword(string password);

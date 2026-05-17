@@ -1,6 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TuPenca.Application\TuPenca.Application.csproj" />
     <ProjectReference Include="..\TuPenca.Infrastructure\TuPenca.Infrastructure.csproj" />
     <ProjectReference Include="..\TuPenca.Domain\TuPenca.Domain.csproj" />

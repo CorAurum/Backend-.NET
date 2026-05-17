@@ -4,5 +4,5 @@ using System.Text;
 
 namespace TuPenca.Domain.Enums
 {
-    public enum ProveedorAuth { Local, Google, Facebook, X }
+    public enum ProveedorAuth { Local, Google } //Facebook y X Pendiente
 }

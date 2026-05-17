@@ -9,12 +9,14 @@ public class AuthService : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtService _jwtService;
+    private readonly IFirebaseService _firebaseService;
     private readonly PasswordHasher<string> _hasher = new();
 
-    public AuthService(IUnitOfWork unitOfWork, IJwtService jwtService)
+    public AuthService(IUnitOfWork unitOfWork, IJwtService jwtService, IFirebaseService firebaseService)
     {
         _unitOfWork = unitOfWork;
         _jwtService = jwtService;
+        _firebaseService = firebaseService;
     }
 
     public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, Guid? sitioId)
@@ -40,6 +42,9 @@ public class AuthService : IAuthService
             if (usuario.Estado == EstadoUsuario.Rechazado)
                 throw new Exception("Tu cuenta fue rechazada");
 
+            if (usuario.ProveedorAuth != ProveedorAuth.Local)
+                throw new Exception("\"Debes iniciar sesión con Google");
+
             // El rol viene del campo Rol de la entidad
             var rolClaim = usuario.Rol == RolUsuario.AdministradorSitio
                 ? "AdministradorSitio"
@@ -51,7 +56,7 @@ public class AuthService : IAuthService
                usuario.Nombre,
                rolClaim,
                usuario.SitioId.ToString() // ← agregado
-           );
+            );
 
             return new LoginResponseDto
             {
@@ -84,7 +89,6 @@ public class AuthService : IAuthService
             // sin sitioId → queda null
             );
 
-
             return new LoginResponseDto
             {
                 Token = token,
@@ -93,6 +97,59 @@ public class AuthService : IAuthService
                 Expira = DateTime.UtcNow.AddHours(8)
             };
         }
+    }
+
+    public async Task<LoginResponseDto> LoginFirebaseAsync(string idToken, Guid? sitioId)
+    {
+        if (sitioId == null)
+            throw new Exception("No se pudo determinar el sitio");
+
+        // Validar token con Firebase
+        var decodedToken = await _firebaseService.VerifyTokenAsync(idToken);
+
+        // Extraer datos
+        var email = decodedToken.Claims["email"]?.ToString();
+
+        if (string.IsNullOrEmpty(email))
+            throw new Exception("Token inválido: no contiene email");
+
+        // Buscar usuario en DB
+        var usuario = await _unitOfWork.Usuarios
+            .GetByEmailAsync(email, sitioId.Value);
+
+        if (usuario == null) 
+            throw new Exception("No se encontro el usuario");
+
+        // Validar estado
+        if (usuario.Estado == EstadoUsuario.Pendiente)
+            throw new Exception("Tu cuenta está pendiente de aprobación");
+
+        if (usuario.Estado == EstadoUsuario.Rechazado)
+            throw new Exception("Tu cuenta fue rechazada");
+
+        if (usuario.ProveedorAuth == ProveedorAuth.Local)
+            throw new Exception("Este usuario está registrado con email y contraseña");
+
+        // Generar JWT
+        var rolClaim = usuario.Rol == RolUsuario.AdministradorSitio
+            ? "AdministradorSitio"
+            : "UsuarioComun";
+
+        var token = _jwtService.GenerarToken(
+            usuario.Id.ToString(),
+            usuario.Email,
+            usuario.Nombre,
+            rolClaim,
+            usuario.SitioId.ToString()
+        );
+
+        return new LoginResponseDto
+        {
+            Token = token,
+            Nombre = usuario.Nombre,
+            Rol = rolClaim,
+            Expira = DateTime.UtcNow.AddHours(8)
+        };
     }
 
     public async Task<RegistroResponseDto> RegistrarUsuarioAsync(RegistroUsuarioRequestDto request, Guid? sitioId)

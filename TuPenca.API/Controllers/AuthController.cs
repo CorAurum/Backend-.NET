@@ -9,12 +9,12 @@ using TuPenca.Infrastructure.Interfaces.Providers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
-    private readonly Guid? _sitioId;
+    private readonly ISitioProvider _sitioProvider;
 
     public AuthController(IAuthService authService, ISitioProvider sitioProvider)
     {
         _authService = authService;
-        _sitioId = sitioProvider.GetSitioId();
+        _sitioProvider = sitioProvider;
     }
 
     [HttpPost("login")]
@@ -23,7 +23,9 @@ public class AuthController : ControllerBase
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
             return BadRequest("Email y contraseña son requeridos");
 
-        var response = await _authService.LoginAsync(request, _sitioId);
+        Guid? sitioId = _sitioProvider.GetSitioId();
+
+        var response = await _authService.LoginAsync(request, sitioId);
 
         if (response == null)
             return Unauthorized("Credenciales incorrectas");
@@ -31,12 +33,29 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost("firebase")]
+    public async Task<IActionResult> FirebaseLogin([FromBody] FirebaseLoginRequest request)
+    {
+        try
+        {
+            Guid? sitioId = _sitioProvider.GetSitioId();
+
+            var response = await _authService.LoginFirebaseAsync(request.IdToken, sitioId);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpPost("registro/usuario")]
     public async Task<IActionResult> RegistrarUsuario([FromBody] RegistroUsuarioRequestDto request)
     {
         try
         {
-            var response = await _authService.RegistrarUsuarioAsync(request, _sitioId);
+            Guid? sitioId = _sitioProvider.GetSitioId();
+            var response = await _authService.RegistrarUsuarioAsync(request, sitioId);
             return Ok(response);
         }
         catch (Exception ex)
@@ -69,10 +88,11 @@ public class AuthController : ControllerBase
     {
         try
         {
-            if (_sitioId == null)
+            Guid? sitioId = _sitioProvider.GetSitioId();
+            if (sitioId == null)
                 return Unauthorized("No se pudo determinar el sitio");
 
-            var response = await _authService.ObtenerUsuariosPendientesAsync(_sitioId.Value);
+            var response = await _authService.ObtenerUsuariosPendientesAsync(sitioId.Value);
             return Ok(response);
         }
         catch (Exception ex)
